@@ -44,14 +44,18 @@ This app runs **100% locally** — no API key or internet connection required af
    ```
     pip install -r requirements.txt
 
-▶️ **Run the App**  
+4. ▶️ **Run the App**  
    ```
     streamlit run app.py
    ```
 
-Then open your browser and go to:  
-    http://localhost:8501  
+   Then open your browser and go to: http://localhost:8501  
 
+## 📦 Output  
+All generated results can be downloaded as a Shutterstock-compatible CSV file(sutterstock_content_upload.csv):  
+| Filename | Description | Keywords | Categories | Editorial | Mature content | Illustration |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| photo1.jpg | Close-up portrait of a cat | cat, feline, pet, cute, whiskers, animal | Animals/Wildlife | no | no | yes |
 
 ## 🧠 Models Used  
 [BLIP: Bootstrapped Language-Image Pretraining](https://huggingface.co/Salesforce/blip-image-captioning-base)  
@@ -69,7 +73,7 @@ Then open your browser and go to:
 🌐 Public web version hosted via Streamlit Cloud or Hugging Face Spaces  
 
 🪪 License
-This project is open-source and available under the MIT License.
+This project is open-source and available under the [MIT License](https://github.com/nyskytigers/stock-auto-caption/blob/main/LICENSE).
 
 👤 Author
-@NYskytigers
+@NYskytigers 🕸️ [Website](nyskytigers.com) 🦋 [Bluesky](bsky.app/profile/nyskytigers.bsky.social) 📺 [YouTube](www.youtube.com/@NYskytigers)
