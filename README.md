@@ -29,37 +29,44 @@ This app runs **100% locally** — no API key or internet connection required af
    cd stock-auto-caption
 
 2. **Create and activate a virtual environment**
+   ```
     python -m venv venv
+   ```
    - On Windows
-    venv\Scripts\activate
+   ```
+     venv\Scripts\activate
+   ```
    - On macOS/Linux
-    # source venv/bin/activate
-
+   ```
+     # source venv/bin/activate  
+   ```
 3. **Install dependencies**
+   ```
     pip install -r requirements.txt
 
-▶️ **Run the App**
+▶️ **Run the App**  
+   ```
     streamlit run app.py
+   ```
 
-Then open your browser and go to: 
-    http://localhost:8501
+Then open your browser and go to:  
+    http://localhost:8501  
 
 
-🧠 Models Used
-
-BLIP: Bootstrapped Language-Image Pretraining
+## 🧠 Models Used  
+[BLIP: Bootstrapped Language-Image Pretraining](https://huggingface.co/Salesforce/blip-image-captioning-base)  
 → Generates descriptive captions from images.
 
-KeyBERT
+[KeyBERT](https://github.com/MaartenGr/KeyBERT)  
 → Extracts SEO-friendly keywords from text using sentence embeddings.
 
 
-🧩 Future Plans
-✏️ Editable keyword fields before export
-💬 User feedback saving (learning system)
-🔍 CLIP-based similarity search for smarter keyword suggestions
-🎨 Improved Streamlit UI
-🌐 Public web version hosted via Streamlit Cloud or Hugging Face Spaces
+## 🧩 **Future Plans**  
+✏️ Editable keyword fields before export  
+💬 User feedback saving (learning system)  
+🔍 CLIP-based similarity search for smarter keyword suggestions  
+🎨 Improved Streamlit UI  
+🌐 Public web version hosted via Streamlit Cloud or Hugging Face Spaces  
 
 🪪 License
 This project is open-source and available under the MIT License.
