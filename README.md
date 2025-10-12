@@ -35,10 +35,10 @@ This app runs **100% locally** — no API key or internet connection required af
    - On macOS/Linux
     # source venv/bin/activate
 
-4. **Install dependencies
+3. **Install dependencies**
     pip install -r requirements.txt
 
-▶️ Run the App
+▶️ **Run the App**
     streamlit run app.py
 
 Then open your browser and go to: 
