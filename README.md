@@ -1,6 +1,3 @@
-<!-- Your Project Title -->
-<h1 align="center">Your Awesome Project Name</h1>
-
 <!-- Badges -->
 <p align="center">
   <a href="https://www.python.org/downloads/release/python-3100/">
