@@ -28,7 +28,7 @@ This app runs **100% locally** — no API key or internet connection required af
    git clone https://github.com/nyskytigers/stock-auto-caption.git
    cd stock-auto-caption
 
-2. **Create and activate a virtual environment
+2. **Create and activate a virtual environment**
     python -m venv venv
    - On Windows
     venv\Scripts\activate
