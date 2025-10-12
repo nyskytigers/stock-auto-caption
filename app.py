@@ -65,7 +65,7 @@ def refine_caption_and_keywords(raw_caption, selected_categories):
 # 5. Streamlit UI
 # ------------------------------------------------------------
 st.title("Shutterstock_Content_Upload Generator")
-st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords — now 100% local (no API key needed).")
+st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
 
 categories_list = [
     "Religion", "Science", "Signs/Symbols", "Sports/Recreation", "Technology", "Transportation", "Vintage",
