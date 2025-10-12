@@ -20,10 +20,11 @@
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
   </a>
 </p>
-
+---
 
 Automatically generate **Shutterstock-ready captions and SEO keywords** from your stock photos and images — powered by **BLIP** (image captioning) and **KeyBERT** (keyword extraction).  
 This app runs **100% locally** — no API key or internet connection required after initial setup.
+
 ---
 
 ## 🚀 Features
