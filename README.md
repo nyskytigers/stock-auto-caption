@@ -21,10 +21,8 @@
   </a>
 </p>
 ---
-
 Automatically generate **Shutterstock-ready captions and SEO keywords** from your stock photos and images — powered by **BLIP** (image captioning) and **KeyBERT** (keyword extraction).  
 This app runs **100% locally** — no API key or internet connection required after initial setup.
-
 ---
 
 ## 🚀 Features
