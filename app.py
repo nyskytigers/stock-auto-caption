@@ -142,4 +142,4 @@ if uploaded_files:
 # ------------------------------------------------------------
 # 7. Footer
 # ------------------------------------------------------------
-st.caption("💡 Uses BLIP for captioning and KeyBERT for keyword generation. Fully local — no API required.")
+st.caption("💡 Uses BLIP for captioning and KeyBERT for keyword generation.")
