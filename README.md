@@ -1,5 +1,7 @@
-# 📸 Stock Auto Caption and Keywords Generator
-
+# 📸 Stock Auto Caption and Keywords Generator  
+> Built by [@NYskytigers](https://github.com/nyskytigers)  
+> Generate professional Shutterstock-style captions and keywords automatically.  
+> Export your metadata as `shutterstock_content_upload.csv` in one click.
 <p align="center">
   <a href="https://www.python.org/downloads/release/python-3100/">
     <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+">
@@ -20,10 +22,9 @@
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
   </a>
 </p>
----
+
 Automatically generate **Shutterstock-ready captions and SEO keywords** from your stock photos and images — powered by **BLIP** (image captioning) and **KeyBERT** (keyword extraction).  
 This app runs **100% locally** — no API key or internet connection required after initial setup.
----
 
 ## 🚀 Features
 - 🧠 **AI caption generation** using the BLIP model (`Salesforce/blip-image-captioning-base`)
