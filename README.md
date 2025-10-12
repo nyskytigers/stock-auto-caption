@@ -30,16 +30,19 @@ This app runs **100% locally** — no API key or internet connection required af
 
 2. **Create and activate a virtual environment
     python -m venv venv
-    venv\Scripts\activate       # On Windows
-    # source venv/bin/activate  # On macOS/Linux
+    # On Windows
+    venv\Scripts\activate
+    # On macOS/Linux
+    # source venv/bin/activate
 
-3. **Install dependencies
+4. **Install dependencies
     pip install -r requirements.txt
 
 ▶️ Run the App
     streamlit run app.py
 
-    Then open your browser and go to: http://localhost:8501
+Then open your browser and go to: 
+    http://localhost:8501
 
 
 🧠 Models Used
