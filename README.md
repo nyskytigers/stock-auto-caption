@@ -74,6 +74,8 @@ This app runs **100% locally** — no API key or internet connection required af
 
 ## 📦 Output  
 All generated results can be downloaded as a Shutterstock-compatible CSV file(sutterstock_content_upload.csv):  
+
+Example  
 | Filename | Description | Keywords | Categories | Editorial | Mature content | Illustration |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | photo1.jpg | Close-up portrait of a cat | cat, feline, pet, cute, whiskers, animal | Animals/Wildlife | no | no | yes |
