@@ -1,6 +1,5 @@
 # 📸 Stock Auto Caption and Keywords Generator
 
-<!-- Badges -->
 <p align="center">
   <a href="https://www.python.org/downloads/release/python-3100/">
     <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+">
@@ -11,14 +10,17 @@
   <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
   </a>
-  <a href="https://huggingface.co/models">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Models-Hugging%20Face-blue" alt="Hugging Face Models">
+  <a href="https://huggingface.co/Salesforce/blip-image-captioning-base">
+    <img src="https://img.shields.io/badge/Model-BLIP-blueviolet" alt="BLIP Model">
+  </a>
+  <a href="https://github.com/MaartenGr/KeyBERT">
+    <img src="https://img.shields.io/badge/Library-KeyBERT-orange" alt="KeyBERT Library">
   </a>
   <a href="https://github.com/psf/black">
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
   </a>
 </p>
----
+
 
 Automatically generate **Shutterstock-ready captions and SEO keywords** from your stock photos — powered by **BLIP** (image captioning) and **KeyBERT** (keyword extraction).  
 This app runs **100% locally** — no API key or internet connection required after initial setup.
