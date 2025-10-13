@@ -108,13 +108,23 @@ st.markdown("""
             color: #1f2937 !important;  /* dark gray text */
             background-color: #ffffff !important;
         }
-        .stTextInput textarea, .stTextArea textarea, .stSelectbox div, .stButton button {
+
+        /* 🔧 Input fields + buttons */
+        input, textarea, select, .stTextInput textarea, .stTextArea textarea {
             color: #1f2937 !important;
-            background-color: #f9fafb !important; /* soft gray */
+            background-color: #ffffff !important; /* pure white for clarity */
             border: 1px solid #e5e7eb !important;
         }
+
+        /* Dropdown containers (non-interactive parts) */
+        div[data-baseweb="select"] {
+            background-color: #f9fafb !important; /* soft neutral */
+            border-radius: 6px !important;
+        }
+
+        /* Buttons */
         .stButton button, .stDownloadButton button {
-            background-color: #3b82f6 !important; /* blue */
+            background-color: #3b82f6 !important;
             color: white !important;
         }
         .stButton button:hover, .stDownloadButton button:hover {
@@ -125,16 +135,26 @@ st.markdown("""
     /* 🌙 Dark Mode */
     @media (prefers-color-scheme: dark) {
         body, html {
-            color: #f3f4f6 !important;  /* light text */
+            color: #f3f4f6 !important;
             background-color: #0f1117 !important;
         }
-        .stTextInput textarea, .stTextArea textarea, .stSelectbox div, .stButton button {
+
+        /* 🔧 Input fields + buttons */
+        input, textarea, select, .stTextInput textarea, .stTextArea textarea {
             color: #f3f4f6 !important;
             background-color: #1f2937 !important;
             border: 1px solid #374151 !important;
         }
+
+        /* Dropdown containers */
+        div[data-baseweb="select"] {
+            background-color: #1e293b !important; /* darker but not "selected" look */
+            border-radius: 6px !important;
+        }
+
+        /* Buttons */
         .stButton button, .stDownloadButton button {
-            background-color: #10b981 !important; /* green accent */
+            background-color: #10b981 !important;
             color: #ffffff !important;
         }
         .stButton button:hover, .stDownloadButton button:hover {
@@ -146,6 +166,7 @@ st.markdown("""
     * {
       transition: background-color 0.3s ease, color 0.3s ease;
     }
+            
     </style>
 """, unsafe_allow_html=True)
 
