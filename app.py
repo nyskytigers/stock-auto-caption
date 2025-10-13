@@ -112,14 +112,17 @@ st.markdown("""
         /* 🔧 Input fields + buttons */
         input, textarea, select, .stTextInput textarea, .stTextArea textarea {
             color: #1f2937 !important;
-            background-color: #ffffff !important; /* pure white for clarity */
-            border: 1px solid #e5e7eb !important;
+            background-color: #ffffff !important; /* pure white for clarity */           
         }
 
         /* Dropdown containers (non-interactive parts) */
         div[data-baseweb="select"] {
-            background-color: #f9fafb !important; /* soft neutral */
-            border-radius: 6px !important;
+            background-color: #f9fafb !important; /* soft neutral */           
+        }
+        
+        /* ✅ FIX: Set dropdown text color explicitly */
+        div[data-baseweb="select"] input {
+            color: #f9fafb !important;
         }
 
         /* Buttons */
@@ -142,14 +145,17 @@ st.markdown("""
         /* 🔧 Input fields + buttons */
         input, textarea, select, .stTextInput textarea, .stTextArea textarea {
             color: #f3f4f6 !important;
-            background-color: #1f2937 !important;
-            border: 1px solid #374151 !important;
+            background-color: #1f2937 !important;       
         }
 
         /* Dropdown containers */
         div[data-baseweb="select"] {
-            background-color: #1e293b !important; /* darker but not "selected" look */
-            border-radius: 6px !important;
+            background-color: #1e293b !important; /* darker but not "selected" look */            
+        }
+        
+        /* ✅ FIX: Set dropdown text color explicitly */
+        div[data-baseweb="select"] input {
+            color: #f3f4f6 !important;
         }
 
         /* Buttons */
