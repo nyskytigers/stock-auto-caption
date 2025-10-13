@@ -70,14 +70,37 @@ st.set_page_config(page_title="Stock Auto Caption Generator(MVP)", layout="wide"
 # Custom Montserrat font and layout styling
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-    html, body, [class*="css"], .stTextInput, .stSelectbox, .stMultiSelect, .stTextArea, .stButton, .stDownloadButton {
+    /* Import the Montserrat font */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
+    /* Apply font to entire Streamlit app */
+    html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif !important;
     }
-    h1 {
-        font-size: 2.2rem !important;
+
+    /* Force override inside Streamlit widgets */
+    div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stTextInputRoot"] label,
+    div[data-testid="stTextAreaRoot"] label,
+    div[data-testid="stSelectboxRoot"] label,
+    div[data-testid="stMultiSelectRoot"] label,
+    div[data-testid="stButton"] button,
+    div[data-testid="stDownloadButton"] button,
+    input, textarea, select {
+        font-family: 'Montserrat', sans-serif !important;
+        font-weight: 400 !important;
+    }
+
+    /* Headings */
+    h1, h2, h3 {
+        font-family: 'Montserrat', sans-serif !important;
         font-weight: 600 !important;
-        margin-bottom: 0.5rem !important;
+    }
+
+    /* Adjust title size for one-line layout */
+    h1 {
+        font-size: 2rem !important;
+        line-height: 1.2 !important;
     }
     </style>
 """, unsafe_allow_html=True)
