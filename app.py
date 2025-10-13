@@ -4,8 +4,6 @@ import pandas as pd
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from keybert import KeyBERT
-from wand.image import Image as WandImage
-import io
 
 # ------------------------------------------------------------
 # 1. Load BLIP model (for image captioning)
@@ -119,6 +117,7 @@ st.write("Upload your stock images to automatically generate Shutterstock-ready 
 # 6. Category and metadata controls
 # ------------------------------------------------------------
 
+
 categories_list = [
     "Religion", "Science", "Signs/Symbols", "Sports/Recreation", "Technology", "Transportation", "Vintage",
     "Abstract", "Animals/Wildlife", "Arts", "Backgrounds/Textures", "Beauty/Fashion", "Buildings/Landmarks",
@@ -141,36 +140,29 @@ illustration = st.selectbox("Illustration?", ["no", "yes"])
 # ------------------------------------------------------------
 
 uploaded_files = st.file_uploader(
-    "Upload stock images (.jpg, .jpeg, .png, .eps supported)",
-    type=["jpg", "jpeg", "png", "eps"],
+    "Upload stock images",
+    type=["jpg", "png", "jpeg"],
     accept_multiple_files=True
 )
 
 if uploaded_files:
     results = []
     for uploaded_file in uploaded_files:
-        try:
-            file_ext = uploaded_file.name.lower().split(".")[-1]
+        image = Image.open(uploaded_file).convert("RGB")
+        st.image(image, caption=uploaded_file.name, use_container_width=True)
 
-            # 🧩 Convert EPS → PNG automatically
-            if file_ext == "eps":
-                with WandImage(file=uploaded_file) as img:
-                    img.format = "png"
-                    blob = img.make_blob("png")
-                    image = Image.open(io.BytesIO(blob)).convert("RGB")
-            else:
-                image = Image.open(uploaded_file).convert("RGB")
-
-            # Show image preview
-            st.image(image, caption=uploaded_file.name, use_container_width=True)
-
-            with st.spinner("🔎 Generating caption and keywords..."):
+        with st.spinner("🔎 Generating caption and keywords..."):
+            try:
                 raw_caption = generate_caption(image)
                 caption, keywords = refine_caption_and_keywords(raw_caption, selected_categories)
-
+              
+                # Editable caption and keywords
+                #edited_caption = st.text_area("📝 Edit Caption", caption, height=80)                
+                #edited_keywords = st.text_area("🔑 Edit Keywords (comma-separated)", keywords, height=100)
                 st.markdown("### ✏️ Edit Generated Metadata")
                 edited_caption = st.text_area("Caption", caption, height=80, key=f"caption_{uploaded_file.name}")
                 edited_keywords = st.text_area("Keywords (comma-separated)", keywords, height=100, key=f"keywords_{uploaded_file.name}")
+
 
                 results.append([
                     uploaded_file.name,
@@ -181,9 +173,8 @@ if uploaded_files:
                     mature,
                     illustration
                 ])
-        except Exception as e:
-            st.error(f"Error processing {uploaded_file.name}: {e}")
-
+            except Exception as e:
+                st.error(f"Error processing {uploaded_file.name}: {e}")
 
 # --------------------------------------------------------
 # 8. Export to Shutterstock CSV format
