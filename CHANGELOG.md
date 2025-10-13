@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [v1.1.1] - 2025-10-14
+### 🎨 Improved
+- Applied Montserrat font globally across all Streamlit UI components (titles, inputs, buttons, dropdowns, text areas)
+- Ensured consistent typography in both light and dark themes
+- Adjusted title font size for better single-line layout
+- Added CSS overrides targeting Streamlit’s internal widget containers for reliable cross-component styling
+
+### 🧱 Maintenance
+- Updated inline CSS block in `app.py` to use `data-testid` selectors
+- Prepared for future light/dark theme color adjustments
 
 ## [v1.1.0] - 2025-10-13
 ### ✏️ Added
