@@ -101,84 +101,11 @@ st.markdown("""
         font-size: 2rem !important;
         margin-bottom: 0.5rem !important;
     }
-
-    /* 🌞 Light Mode */
-    @media (prefers-color-scheme: light) {
-        body, html {
-            color: #1f2937 !important;  /* dark gray text */
-            background-color: #ffffff !important;
-        }
-
-        /* 🔧 Input fields + buttons */
-        input, textarea, select, .stTextInput textarea, .stTextArea textarea {
-            color: #1f2937 !important;
-            background-color: #ffffff !important; /* pure white for clarity */           
-        }
-
-        /* Dropdown containers (non-interactive parts) */
-        div[data-baseweb="select"] {
-            background-color: #f9fafb !important; /* soft neutral */           
-        }
-        
-        /* ✅ FIX: Set dropdown text color explicitly */
-        div[data-baseweb="select"] input {
-            color: #f9fafb !important;
-        }
-
-        /* Buttons */
-        .stButton button, .stDownloadButton button {
-            background-color: #3b82f6 !important;
-            color: white !important;
-        }
-        .stButton button:hover, .stDownloadButton button:hover {
-            background-color: #2563eb !important;
-        }
-    }
-
-    /* 🌙 Dark Mode */
-    @media (prefers-color-scheme: dark) {
-        body, html {
-            color: #f3f4f6 !important;
-            background-color: #0f1117 !important;
-        }
-
-        /* 🔧 Input fields + buttons */
-        input, textarea, select, .stTextInput textarea, .stTextArea textarea {
-            color: #f3f4f6 !important;
-            background-color: #1f2937 !important;       
-        }
-
-        /* Dropdown containers */
-        div[data-baseweb="select"] {
-            background-color: #1e293b !important; /* darker but not "selected" look */            
-        }
-        
-        /* ✅ FIX: Set dropdown text color explicitly */
-        div[data-baseweb="select"] input {
-            color: #f3f4f6 !important;
-        }
-
-        /* Buttons */
-        .stButton button, .stDownloadButton button {
-            background-color: #10b981 !important;
-            color: #ffffff !important;
-        }
-        .stButton button:hover, .stDownloadButton button:hover {
-            background-color: #059669 !important;
-        }
-    }
     
     /* ✨ Smooth theme transitions */
     * {
       transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    /* 🩹 Fix: hide ghost caret introduced in Streamlit ≥1.49 */
-    [data-testid="stMarkdownContainer"],
-    [data-testid="stAppViewContainer"],
-    [data-testid="stVerticalBlock"] {
-        caret-color: transparent !important;
-    }           
+    }        
                  
     </style>
 """, unsafe_allow_html=True)
