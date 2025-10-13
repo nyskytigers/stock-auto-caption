@@ -172,7 +172,14 @@ st.markdown("""
     * {
       transition: background-color 0.3s ease, color 0.3s ease;
     }
-            
+
+    /* 🩹 Fix: hide ghost caret introduced in Streamlit ≥1.49 */
+    [data-testid="stMarkdownContainer"],
+    [data-testid="stAppViewContainer"],
+    [data-testid="stVerticalBlock"] {
+        caret-color: transparent !important;
+    }           
+                 
     </style>
 """, unsafe_allow_html=True)
 
