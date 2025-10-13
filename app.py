@@ -64,8 +64,32 @@ def refine_caption_and_keywords(raw_caption, selected_categories):
 # ------------------------------------------------------------
 # 5. Streamlit UI
 # ------------------------------------------------------------
-st.title("Shutterstock_Content_Upload Generator(MVP)")
+
+st.set_page_config(page_title="Stock Auto Caption Generator(MVP)", layout="wide")
 st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
+
+# Custom Montserrat font and layout styling
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    html, body, [class*="css"], .stTextInput, .stSelectbox, .stMultiSelect, .stTextArea, .stButton, .stDownloadButton {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+    h1 {
+        font-size: 2.2rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("Shutterstock Content Upload Generator")
+st.write("Upload your images to automatically generate and edit Shutterstock-ready captions and keywords.")
+
+# ------------------------------------------------------------
+# 6. Category and metadata controls
+# ------------------------------------------------------------
+
 
 categories_list = [
     "Religion", "Science", "Signs/Symbols", "Sports/Recreation", "Technology", "Transportation", "Vintage",
@@ -84,6 +108,10 @@ editorial = st.selectbox("Editorial?", ["no", "yes"])
 mature = st.selectbox("Mature content?", ["no", "yes"])
 illustration = st.selectbox("Illustration?", ["no", "yes"])
 
+# ------------------------------------------------------------
+# 7. Upload section
+# ------------------------------------------------------------
+
 uploaded_files = st.file_uploader(
     "Upload stock images",
     type=["jpg", "png", "jpeg"],
@@ -100,13 +128,19 @@ if uploaded_files:
             try:
                 raw_caption = generate_caption(image)
                 caption, keywords = refine_caption_and_keywords(raw_caption, selected_categories)
+              
+                # Editable caption and keywords
+                #edited_caption = st.text_area("📝 Edit Caption", caption, height=80)                
+                #edited_keywords = st.text_area("🔑 Edit Keywords (comma-separated)", keywords, height=100)
+                st.markdown("### ✏️ Edit Generated Metadata")
+                edited_caption = st.text_area("Caption", caption, height=80, key=f"caption_{uploaded_file.name}")
+                edited_keywords = st.text_area("Keywords (comma-separated)", keywords, height=100, key=f"keywords_{uploaded_file.name}")
 
-                st.success(f"**Caption:** {caption}\n\n**Keywords:** {keywords}")
 
                 results.append([
                     uploaded_file.name,
-                    caption,
-                    keywords,
+                    edited_caption.strip(),
+                    edited_keywords.strip(),
                     ",".join(selected_categories),
                     editorial,
                     mature,
@@ -115,9 +149,9 @@ if uploaded_files:
             except Exception as e:
                 st.error(f"Error processing {uploaded_file.name}: {e}")
 
-    # --------------------------------------------------------
-    # 6. Export to Shutterstock CSV format
-    # --------------------------------------------------------
+# --------------------------------------------------------
+# 8. Export to Shutterstock CSV format
+# --------------------------------------------------------
     if results:
         df = pd.DataFrame(
             results,
@@ -140,6 +174,10 @@ if uploaded_files:
         )
 
 # ------------------------------------------------------------
-# 7. Footer
+# 9. Footer
 # ------------------------------------------------------------
 st.caption("💡 Uses BLIP for captioning and KeyBERT for keyword generation.")
+
+st.caption("Developed by 🌐[NYskytigers](https://nyskytigers.com) | 🫙[GitHub](https://github.com/nyskytigers/stock-auto-caption) | 🍵[Buy me a coffee](https://www.buymeacoffee.com/nyskytigers)")
+st.caption("© 2024 NYskytigers. All rights reserved.")
+
