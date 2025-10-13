@@ -66,7 +66,6 @@ def refine_caption_and_keywords(raw_caption, selected_categories):
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Stock Auto Caption Generator(MVP)", layout="wide")
-st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
 
 # Custom Montserrat font and layout styling
 st.markdown("""
@@ -82,6 +81,9 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+st.title("Stock Auto Caption Generator(MVP)")
+st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
 
 # ------------------------------------------------------------
 # 6. Category and metadata controls
