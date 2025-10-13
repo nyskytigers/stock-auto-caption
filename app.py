@@ -70,15 +70,15 @@ st.set_page_config(page_title="Stock Auto Caption Generator(MVP)", layout="wide"
 # Custom Montserrat font and layout styling
 st.markdown("""
     <style>
-    /* Import the Montserrat font */
+    /* Import Montserrat */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
 
-    /* Apply font to entire Streamlit app */
+    /* Universal font across app */
     html, body, [class*="css"] {
         font-family: 'Montserrat', sans-serif !important;
     }
 
-    /* Force override inside Streamlit widgets */
+    /* Base typography for Streamlit widgets */
     div[data-testid="stMarkdownContainer"] p,
     div[data-testid="stTextInputRoot"] label,
     div[data-testid="stTextAreaRoot"] label,
@@ -91,21 +91,65 @@ st.markdown("""
         font-weight: 400 !important;
     }
 
-    /* Headings */
     h1, h2, h3 {
         font-family: 'Montserrat', sans-serif !important;
         font-weight: 600 !important;
+        line-height: 1.2;
     }
 
-    /* Adjust title size for one-line layout */
     h1 {
         font-size: 2rem !important;
-        line-height: 1.2 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* 🌞 Light Mode */
+    @media (prefers-color-scheme: light) {
+        body, html {
+            color: #1f2937 !important;  /* dark gray text */
+            background-color: #ffffff !important;
+        }
+        .stTextInput textarea, .stTextArea textarea, .stSelectbox div, .stButton button {
+            color: #1f2937 !important;
+            background-color: #f9fafb !important; /* soft gray */
+            border: 1px solid #e5e7eb !important;
+        }
+        .stButton button, .stDownloadButton button {
+            background-color: #3b82f6 !important; /* blue */
+            color: white !important;
+        }
+        .stButton button:hover, .stDownloadButton button:hover {
+            background-color: #2563eb !important;
+        }
+    }
+
+    /* 🌙 Dark Mode */
+    @media (prefers-color-scheme: dark) {
+        body, html {
+            color: #f3f4f6 !important;  /* light text */
+            background-color: #0f1117 !important;
+        }
+        .stTextInput textarea, .stTextArea textarea, .stSelectbox div, .stButton button {
+            color: #f3f4f6 !important;
+            background-color: #1f2937 !important;
+            border: 1px solid #374151 !important;
+        }
+        .stButton button, .stDownloadButton button {
+            background-color: #10b981 !important; /* green accent */
+            color: #ffffff !important;
+        }
+        .stButton button:hover, .stDownloadButton button:hover {
+            background-color: #059669 !important;
+        }
+    }
+    
+    /* ✨ Smooth theme transitions */
+    * {
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     </style>
 """, unsafe_allow_html=True)
 
-st.title("Stock Auto Caption Generator(MVP)")
+st.title("Shutterstock Content Upload Generator(MVP)")
 st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
 
 # ------------------------------------------------------------
