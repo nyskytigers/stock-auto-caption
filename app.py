@@ -83,9 +83,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("Shutterstock Content Upload Generator")
-st.write("Upload your images to automatically generate and edit Shutterstock-ready captions and keywords.")
-
 # ------------------------------------------------------------
 # 6. Category and metadata controls
 # ------------------------------------------------------------
