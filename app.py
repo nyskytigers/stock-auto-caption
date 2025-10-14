@@ -65,7 +65,7 @@ def refine_caption_and_keywords(raw_caption, selected_categories):
 # 5. Streamlit UI
 # ------------------------------------------------------------
 
-st.set_page_config(page_title="Stock Auto Caption Generator(MVP)", layout="wide")
+st.set_page_config(page_title="Shutterstock Keyword Generator")
 
 # Custom Montserrat font and layout styling
 st.markdown("""
@@ -106,7 +106,29 @@ st.markdown("""
     * {
       transition: background-color 0.3s ease, color 0.3s ease;
     }        
-                 
+    
+
+    /* Force col1 width to 240px */
+    div[data-testid="column"]:first-of-type {
+        flex: 0 0 240px !important;  /* fixed width */
+        max-width: 240px !important;
+        min-width: 240px !important;
+    }
+
+    /* Let col2 fill the rest */
+    div[data-testid="column"]:nth-of-type(2) {
+        flex: 1 1 auto !important;
+    }
+            
+    /* Force Streamlit text area height overrides */
+    div[data-testid="stTextAreaRoot"] textarea {
+        min-height: 90px !important;   /* adjust here for 3-line height */
+        height: 90px !important;
+        line-height: 1.4 !important;
+        font-size: 0.9rem !important;
+    }
+
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -139,6 +161,7 @@ illustration = st.selectbox("Illustration?", ["no", "yes"])
 # 7. Upload section
 # ------------------------------------------------------------
 
+
 uploaded_files = st.file_uploader(
     "Upload stock images",
     type=["jpg", "png", "jpeg"],
@@ -147,34 +170,73 @@ uploaded_files = st.file_uploader(
 
 if uploaded_files:
     results = []
-    for uploaded_file in uploaded_files:
+
+    # Section Title (normal font, no emoji)
+    st.markdown("Preview & Edit Metadata", unsafe_allow_html=True)
+
+    # Responsive card grid
+    for idx, uploaded_file in enumerate(uploaded_files):
         image = Image.open(uploaded_file).convert("RGB")
-        st.image(image, caption=uploaded_file.name, use_container_width=True)
 
-        with st.spinner("🔎 Generating caption and keywords..."):
-            try:
-                raw_caption = generate_caption(image)
-                caption, keywords = refine_caption_and_keywords(raw_caption, selected_categories)
+        with st.container():
+      
+            # Two-column grid (auto-adjusts on wide screens)
+            
+            col1, col2 = st.columns([1, 2], vertical_alignment="center")
+
+            # --- Left column (Image) ---
+            with col1:
+            # Fix preview height (center image vertically)
+                preview_width = 220
+                preview_height = 220
+                image.thumbnail((preview_width, preview_height))
+
+                st.image(image, caption=None, width=220)
               
-                # Editable caption and keywords
-                #edited_caption = st.text_area("📝 Edit Caption", caption, height=80)                
-                #edited_keywords = st.text_area("🔑 Edit Keywords (comma-separated)", keywords, height=100)
-                st.markdown("### ✏️ Edit Generated Metadata")
-                edited_caption = st.text_area("Caption", caption, height=80, key=f"caption_{uploaded_file.name}")
-                edited_keywords = st.text_area("Keywords (comma-separated)", keywords, height=100, key=f"keywords_{uploaded_file.name}")
+            # --- Right column (Caption + Keywords) ---
+            with col2:
+             
+                st.text_input(
+                    label="Filename",
+                    value=uploaded_file.name,
+                    key=f"filename_{uploaded_file.name}"
+                )
+                with st.spinner("🔎 Generating caption and keywords..."):
+                    try:
+                        raw_caption = generate_caption(image)
+                        caption, keywords = refine_caption_and_keywords(raw_caption, selected_categories)
 
+                        st.text_area(
+                            "Caption",
+                            caption,
+                            height=70,
+                            key=f"caption_{uploaded_file.name}",
+                        )
+                        st.text_area(
+                            "Keywords (comma-separated)",
+                            keywords,
+                            height=110,  # fits ~3 lines comfortably
+                            key=f"keywords_{uploaded_file.name}",
+                        )
 
-                results.append([
-                    uploaded_file.name,
-                    edited_caption.strip(),
-                    edited_keywords.strip(),
-                    ",".join(selected_categories),
-                    editorial,
-                    mature,
-                    illustration
-                ])
-            except Exception as e:
-                st.error(f"Error processing {uploaded_file.name}: {e}")
+                        results.append([
+                            uploaded_file.name,
+                            caption.strip(),
+                            keywords.strip(),
+                            ",".join(selected_categories),
+                            editorial,
+                            mature,
+                            illustration
+                        ])
+                    except Exception as e:
+                        st.error(f"Error processing {uploaded_file.name}: {e}")
+
+            # --- Divider between image blocks ---
+            st.markdown(
+                "<hr style='border:0.5px solid #3a3a3a; margin:1.5rem 0;'/>",
+                unsafe_allow_html=True
+                )
+
 
 # --------------------------------------------------------
 # 8. Export to Shutterstock CSV format
