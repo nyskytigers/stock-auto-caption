@@ -67,70 +67,23 @@ def refine_caption_and_keywords(raw_caption, selected_categories):
 
 st.set_page_config(page_title="Shutterstock Keyword Generator")
 
-# Custom Montserrat font and layout styling
+# Load Google Font separately (since Streamlit blocks @import inside CSS)
 st.markdown("""
-    <style>
-    /* Import Montserrat */
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
-
-    /* Universal font across app */
-    html, body, [class*="css"] {
-        font-family: 'Montserrat', sans-serif !important;
-    }
-
-    /* Base typography for Streamlit widgets */
-    div[data-testid="stMarkdownContainer"] p,
-    div[data-testid="stTextInputRoot"] label,
-    div[data-testid="stTextAreaRoot"] label,
-    div[data-testid="stSelectboxRoot"] label,
-    div[data-testid="stMultiSelectRoot"] label,
-    div[data-testid="stButton"] button,
-    div[data-testid="stDownloadButton"] button,
-    input, textarea, select {
-        font-family: 'Montserrat', sans-serif !important;
-        font-weight: 400 !important;
-    }
-
-    h1, h2, h3 {
-        font-family: 'Montserrat', sans-serif !important;
-        font-weight: 600 !important;
-        line-height: 1.2;
-    }
-
-    h1 {
-        font-size: 2rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    /* ✨ Smooth theme transitions */
-    * {
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }        
-    
-
-    /* Force col1 width to 240px */
-    div[data-testid="column"]:first-of-type {
-        flex: 0 0 240px !important;  /* fixed width */
-        max-width: 240px !important;
-        min-width: 240px !important;
-    }
-
-    /* Let col2 fill the rest */
-    div[data-testid="column"]:nth-of-type(2) {
-        flex: 1 1 auto !important;
-    }
-            
-    /* Force Streamlit text area height overrides */
-    div[data-testid="stTextAreaRoot"] textarea {
-        min-height: 90px !important;   /* adjust here for 3-line height */
-        height: 90px !important;
-        line-height: 1.4 !important;
-        font-size: 0.9rem !important;
-    }
-
-
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 """, unsafe_allow_html=True)
+
+# Load external CSS file
+#def local_css(file_name):
+    #with open(file_name) as f:
+       # st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Load external CSS file safely (UTF-8 for Windows)
+def local_css(file_name):
+    with open(file_name, encoding="utf-8") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Apply styles
+local_css("style.css")
 
 st.title("Shutterstock Content Upload Generator(MVP)")
 st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
@@ -153,9 +106,17 @@ selected_categories = st.multiselect(
     max_selections=2
 )
 
-editorial = st.selectbox("Editorial?", ["no", "yes"])
-mature = st.selectbox("Mature content?", ["no", "yes"])
-illustration = st.selectbox("Illustration?", ["no", "yes"])
+# Three columns for dropdowns (aligned horizontally)
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    editorial = st.selectbox("Editorial?", ["no", "yes"], key="editorial_select")
+
+with col2:
+    mature = st.selectbox("Mature content?", ["no", "yes"], key="mature_select")
+
+with col3:
+    illustration = st.selectbox("Illustration?", ["no", "yes"], key="illustration_select")
 
 # ------------------------------------------------------------
 # 7. Upload section
