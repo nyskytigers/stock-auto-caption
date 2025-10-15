@@ -128,9 +128,9 @@ uploaded_files = st.file_uploader(
     type=["jpg", "png", "jpeg"],
     accept_multiple_files=True
 )
+results = []
 
-if uploaded_files:
-    results = []
+if uploaded_files:  
 
     # Section Title (normal font, no emoji)
     st.markdown("Preview & Edit Metadata", unsafe_allow_html=True)
@@ -176,7 +176,7 @@ if uploaded_files:
                         st.text_area(
                             "Keywords (comma-separated)",
                             keywords,
-                            height=110,  # fits ~3 lines comfortably
+                            height=110,  
                             key=f"keywords_{uploaded_file.name}",
                         )
 
@@ -202,26 +202,43 @@ if uploaded_files:
 # --------------------------------------------------------
 # 8. Export to Shutterstock CSV format
 # --------------------------------------------------------
-    if results:
-        df = pd.DataFrame(
-            results,
-            columns=[
-                "Filename",
-                "Description",
-                "Keywords",
-                "Categories",
-                "Editorial",
-                "Mature content",
-                "Illustration"
-            ]
-        )
-        csv = df.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            "⬇️ Download Shutterstock CSV",
-            csv,
-            "shutterstock_content_upload.csv",
-            "text/csv"
-        )
+if results:
+    # Rebuild results with latest user edits from session_state
+    final_results = []
+    for uploaded_file in uploaded_files:
+        filename = st.session_state.get(f"filename_{uploaded_file.name}", uploaded_file.name)
+        caption = st.session_state.get(f"caption_{uploaded_file.name}", "")
+        keywords = st.session_state.get(f"keywords_{uploaded_file.name}", "")
+        final_results.append([
+            filename,
+            caption.strip(),
+            keywords.strip(),
+            ",".join(selected_categories),
+            editorial,
+            mature,
+            illustration
+        ])
+
+    df = pd.DataFrame(
+        final_results,
+        columns=[
+            "Filename",
+            "Description",
+            "Keywords",
+            "Categories",
+            "Editorial",
+            "Mature content",
+            "Illustration"
+        ]
+    )
+
+    csv = df.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        "⬇️ Download Shutterstock CSV",
+        csv,
+        "shutterstock_content_upload.csv",
+        "text/csv"
+    )
 
 # ------------------------------------------------------------
 # 9. Footer
@@ -229,5 +246,5 @@ if uploaded_files:
 st.caption("💡 Uses BLIP for captioning and KeyBERT for keyword generation.")
 
 st.caption("Developed by 🌐[NYskytigers](https://nyskytigers.com) | 🫙[GitHub](https://github.com/nyskytigers/stock-auto-caption) | 🍵[Buy me a coffee](https://www.buymeacoffee.com/nyskytigers)")
-st.caption("© 2024 NYskytigers. All rights reserved.")
+st.caption("© 2025 NYskytigers. All rights reserved.")
 
