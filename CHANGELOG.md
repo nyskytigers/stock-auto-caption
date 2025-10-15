@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.1] - 2025-10-15
+### 🐞 Fixes
+- Fixed issue where **edited captions and keywords** were not saved in the exported CSV.  
+- Now the app reads updated values from `st.session_state` to ensure user edits are preserved.  
+
+### 💡 Improvements
+- Added safer variable initialization (`results = []`) to prevent `NameError` when no file is uploaded.  
+- Simplified export logic for better stability and clarity.  
+
+## [v1.2.0] - 2025-10-14
+### UI & Feature Updates
+- Arranged **Editorial**, **Mature content**, and **Illustration** dropdowns side-by-side.
+- Unified **Montserrat font** across all elements for consistent look and feel.
+- Refactored CSS into external `style.css` file for modular code organization.
+
 ## [1.1.2] – 2025-10-14
 ### Changed
 - UI preview update
