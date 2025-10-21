@@ -128,7 +128,7 @@ results = []
 # 8. Batch Edit: Apply to All Captions / Keywords
 # ------------------------------------------------------------
 if uploaded_files:
-    st.markdown("### ⚙️ Batch Edit Options")
+    st.markdown("### Batch Edit Options")
 
     # Inputs for master caption and keywords
     global_caption_input = st.text_area(

@@ -1,4 +1,4 @@
-# 📸 Stock Auto Caption and Keywords Generator  
+# 📸 Shutterstock Content Upload Generator  
 > Built by [@NYskytigers](https://github.com/nyskytigers)  
 > Generate professional Shutterstock-style captions and keywords automatically.  
 > Export your metadata as `shutterstock_content_upload.csv` in one click.
