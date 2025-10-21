@@ -85,14 +85,12 @@ def local_css(file_name):
 # Apply styles
 local_css("style.css")
 
-st.title("Shutterstock Content Upload Generator(MVP)")
+st.title("Image Captions and Keywords Generator(MVP)")
 st.write("Upload your stock images to automatically generate Shutterstock-ready captions and SEO keywords.")
 
 # ------------------------------------------------------------
 # 6. Category and metadata controls
 # ------------------------------------------------------------
-
-
 categories_list = [
     "Religion", "Science", "Signs/Symbols", "Sports/Recreation", "Technology", "Transportation", "Vintage",
     "Abstract", "Animals/Wildlife", "Arts", "Backgrounds/Textures", "Beauty/Fashion", "Buildings/Landmarks",
@@ -111,18 +109,14 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     editorial = st.selectbox("Editorial?", ["no", "yes"], key="editorial_select")
-
 with col2:
     mature = st.selectbox("Mature content?", ["no", "yes"], key="mature_select")
-
 with col3:
     illustration = st.selectbox("Illustration?", ["no", "yes"], key="illustration_select")
 
 # ------------------------------------------------------------
 # 7. Upload section
 # ------------------------------------------------------------
-
-
 uploaded_files = st.file_uploader(
     "Upload stock images",
     type=["jpg", "png", "jpeg"],
@@ -130,85 +124,135 @@ uploaded_files = st.file_uploader(
 )
 results = []
 
-if uploaded_files:  
+# ------------------------------------------------------------
+# 8. Batch Edit: Apply to All Captions / Keywords
+# ------------------------------------------------------------
+if uploaded_files:
+    st.markdown("### ⚙️ Batch Edit Options")
 
-    # Section Title (normal font, no emoji)
-    st.markdown("Preview & Edit Metadata", unsafe_allow_html=True)
+    # Inputs for master caption and keywords
+    global_caption_input = st.text_area(
+        "✏️ Master Caption (to append)",
+        "",
+        height=70,
+        key="global_caption" # Use key to hold the value
+    )
+    global_keywords_input = st.text_area(
+        "🔑 Master Keywords (to append, comma-separated)",
+        "",
+        height=90,
+        key="global_keywords" # Use key to hold the value
+    )
 
-    # Responsive card grid
+    col_apply1, col_apply2 = st.columns(2)
+    with col_apply1:
+        # --- CHANGED BUTTON LABEL AND LOGIC ---
+        if st.button("➕ Append Caption to All"):
+            if global_caption_input.strip():
+                # Directly loop and update the session state for each file
+                for file in uploaded_files:
+                    key = f"caption_{file.name}"
+                    original_caption = st.session_state.get(key, "")
+                    # Append new caption
+                    new_caption = (original_caption + " " + global_caption_input.strip()).strip()
+                    st.session_state[key] = new_caption
+                st.success("✅ Master caption appended to all images.")
+            else:
+                st.warning("Master caption is empty.")
+                
+    with col_apply2:
+        # --- CHANGED BUTTON LABEL AND LOGIC ---
+        if st.button("➕ Append Keywords to All"):
+            master_keywords_str = global_keywords_input.strip()
+            if master_keywords_str:
+                # Loop and update the session state for each file
+                for file in uploaded_files:
+                    key = f"keywords_{file.name}"
+                    original_keywords_str = st.session_state.get(key, "")
+                    
+                    # Get original keywords as a clean list
+                    original_list = [k.strip() for k in original_keywords_str.split(",") if k.strip()]
+                    
+                    # Get master keywords as a clean list
+                    master_list = [k.strip() for k in master_keywords_str.split(",") if k.strip()]
+                    
+                    # Combine and deduplicate
+                    combined_list = original_list + master_list
+                    deduplicated_list = list(dict.fromkeys(combined_list)) # Preserves order
+                    
+                    # Save back to session state
+                    st.session_state[key] = ", ".join(deduplicated_list)
+                    
+                st.success("✅ Master keywords appended and deduplicated.")
+            else:
+                st.warning("Master keywords are empty.")
+
+    # ------------------------------------------------------------
+    # 9. Generate and Edit Each Image
+    # ------------------------------------------------------------
+    st.markdown("### Preview & Edit Metadata")
     for idx, uploaded_file in enumerate(uploaded_files):
         image = Image.open(uploaded_file).convert("RGB")
+        
+        # Define the unique session state keys for this file
+        caption_key = f"caption_{uploaded_file.name}"
+        keywords_key = f"keywords_{uploaded_file.name}"
 
         with st.container():
-      
-            # Two-column grid (auto-adjusts on wide screens)
-            
             col1, col2 = st.columns([1, 2], vertical_alignment="center")
-
-            # --- Left column (Image) ---
             with col1:
-            # Fix preview height (center image vertically)
-                preview_width = 220
-                preview_height = 220
+                preview_width, preview_height = 220, 220
                 image.thumbnail((preview_width, preview_height))
-
                 st.image(image, caption=None, width=220)
-              
-            # --- Right column (Caption + Keywords) ---
+
             with col2:
-             
-                st.text_input(
-                    label="Filename",
-                    value=uploaded_file.name,
-                    key=f"filename_{uploaded_file.name}"
-                )
-                with st.spinner("🔎 Generating caption and keywords..."):
-                    try:
-                        raw_caption = generate_caption(image)
-                        caption, keywords = refine_caption_and_keywords(raw_caption, selected_categories)
+                st.text_input("Filename", value=uploaded_file.name, key=f"filename_{uploaded_file.name}", disabled=True)
 
-                        st.text_area(
-                            "Caption",
-                            caption,
-                            height=70,
-                            key=f"caption_{uploaded_file.name}",
-                        )
-                        st.text_area(
-                            "Keywords (comma-separated)",
-                            keywords,
-                            height=110,  
-                            key=f"keywords_{uploaded_file.name}",
-                        )
+                # --- This is the new logic ---
+                # Only generate if it hasn't been generated before (or applied)
+                if caption_key not in st.session_state:
+                    with st.spinner("🔎 Generating caption and keywords..."):
+                        try:
+                            raw_caption = generate_caption(image)
+                            caption, keywords = refine_caption_and_keywords(raw_caption, selected_categories)
+                            
+                            # Store them in session state
+                            st.session_state[caption_key] = caption
+                            st.session_state[keywords_key] = keywords
+                        
+                        except Exception as e:
+                            st.error(f"Error processing {uploaded_file.name}: {e}")
+                            st.session_state[caption_key] = "Error"
+                            st.session_state[keywords_key] = "Error"
 
-                        results.append([
-                            uploaded_file.name,
-                            caption.strip(),
-                            keywords.strip(),
-                            ",".join(selected_categories),
-                            editorial,
-                            mature,
-                            illustration
-                        ])
-                    except Exception as e:
-                        st.error(f"Error processing {uploaded_file.name}: {e}")
-
-            # --- Divider between image blocks ---
-            st.markdown(
-                "<hr style='border:0.5px solid #3a3a3a; margin:1.5rem 0;'/>",
-                unsafe_allow_html=True
+                # Create widgets using the session state keys.
+                # The widget will now always show the value from st.session_state
+                st.text_area(
+                    "Caption",
+                    height=70,
+                    key=caption_key # This key binds the widget to the session state
                 )
 
+                st.text_area(
+                    "Keywords (comma-separated)",
+                    height=110,
+                    key=keywords_key # This key binds the widget to the session state
+                )
 
-# --------------------------------------------------------
-# 8. Export to Shutterstock CSV format
-# --------------------------------------------------------
-if results:
-    # Rebuild results with latest user edits from session_state
+            st.markdown("<hr style='border:0.5px solid #3a3a3a; margin:1.5rem 0;'/>", unsafe_allow_html=True)
+
+# ------------------------------------------------------------
+# 10. Export to Shutterstock CSV format
+# ------------------------------------------------------------
+if uploaded_files:
     final_results = []
     for uploaded_file in uploaded_files:
-        filename = st.session_state.get(f"filename_{uploaded_file.name}", uploaded_file.name)
+        filename = uploaded_file.name
+        
+        # Read directly from the session state keys
         caption = st.session_state.get(f"caption_{uploaded_file.name}", "")
         keywords = st.session_state.get(f"keywords_{uploaded_file.name}", "")
+        
         final_results.append([
             filename,
             caption.strip(),
@@ -219,29 +263,30 @@ if results:
             illustration
         ])
 
-    df = pd.DataFrame(
-        final_results,
-        columns=[
-            "Filename",
-            "Description",
-            "Keywords",
-            "Categories",
-            "Editorial",
-            "Mature content",
-            "Illustration"
-        ]
-    )
+    if final_results:
+        df = pd.DataFrame(
+            final_results,
+            columns=[
+                "Filename",
+                "Description",
+                "Keywords",
+                "Categories",
+                "Editorial",
+                "Mature content",
+                "Illustration"
+            ]
+        )
 
-    csv = df.to_csv(index=False).encode("utf-8")
-    st.download_button(
-        "⬇️ Download Shutterstock CSV",
-        csv,
-        "shutterstock_content_upload.csv",
-        "text/csv"
-    )
+        csv = df.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            "⬇️ Download Shutterstock CSV",
+            csv,
+            "shutterstock_content_upload.csv",
+            "text/csv"
+        )
 
 # ------------------------------------------------------------
-# 9. Footer
+# 11. Footer
 # ------------------------------------------------------------
 st.caption("💡 Uses BLIP for captioning and KeyBERT for keyword generation.")
 
