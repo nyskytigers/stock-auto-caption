@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.3.1] - 2025-10-16
+### 🧩 Added
+- “Apply to All” feature for captions and keywords
+  - Users can now define a master caption and/or keyword set
+  - Automatically applies to all uploaded images
+  - Updates both the editable fields and exported CSV
+- Persistent session state to retain applied or edited metadata
+- Batch editing options integrated into UI for easier workflow
+
 ## [v1.2.1] - 2025-10-15
 ### 🐞 Fixes
 - Fixed issue where **edited captions and keywords** were not saved in the exported CSV.  
