@@ -29,8 +29,9 @@ This app runs **100% locally** — no API key or internet connection required af
 ## 🚀 Features
 - 🧠 **AI caption generation** using the BLIP model (`Salesforce/blip-image-captioning-base`)
 - 🔑 **Keyword extraction** using KeyBERT (`all-MiniLM-L6-v2`)
-- 🗂️ **Export to Shutterstock CSV format** (`shutterstock_content_upload.csv`)
-- 🎨 **Category and metadata selection** (Editorial, Mature, Illustration)
+- 🗂️ **Export to CSV format** 
+- ✏️ **Full Editing Control**
+- 🎨 **Category and metadata selection** 
 - 💾 Works completely offline — **no OpenAI or external APIs needed**
 
 ---
@@ -75,10 +76,23 @@ This app runs **100% locally** — no API key or internet connection required af
 ## 📦 Output  
 All generated results can be downloaded as a Shutterstock-compatible CSV file(sutterstock_content_upload.csv):  
 
-Example  
+Shutterstock Example  
 | Filename | Description | Keywords | Categories | Editorial | Mature content | Illustration |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| photo1.jpg | Close-up portrait of a cat | cat, feline, pet, cute, whiskers, animal | Animals/Wildlife | no | no | yes |
+| photo1.jpg | Close-up portrait of a cat | cat, feline, pet, cute, whiskers, animal | Animals/Wildlife | no | no | yes |  
+
+Adobe Stock Example  
+| Filename | Title | Keywords | Category | Releases |
+| :--- | :--- | :--- | :--- | :--- |
+| photo2.jpg | A beautiful mountain landscape | mountain, landscape, nature, sky, clouds | 12 |  |
+
+iStock (Zipped CSVs)
+
+Generates istock_metadata.zip containing one CSV per image:
+File: photo3.csv
+| file name | description | country | title | keywords | color |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| photo3.eps | Urban city skyline | | Urban city skyline | city, urban, sky... | yes |
 
 ## 🧠 Models Used  
 [BLIP: Bootstrapped Language-Image Pretraining](https://huggingface.co/Salesforce/blip-image-captioning-base)  
@@ -89,14 +103,12 @@ Example
 
 
 ## 🧩 **Future Plans**  
-✏️ Editable keyword fields before export  
 💬 User feedback saving (learning system)  
 🔍 CLIP-based similarity search for smarter keyword suggestions  
-🎨 Improved Streamlit UI  
 🌐 Public web version hosted via Streamlit Cloud or Hugging Face Spaces  
 
 🪪 License
 This project is open-source and available under the [MIT License](https://github.com/nyskytigers/stock-auto-caption/blob/main/LICENSE).
 
 👤 Author
-@NYskytigers 🕸️ [Website](nyskytigers.com) 🦋 [Bluesky](bsky.app/profile/nyskytigers.bsky.social) 📺 [YouTube](www.youtube.com/@NYskytigers)
+@NYskytigers 🕸️ [Website](nyskytigeres.com) 🦋 [Bluesky](bsky.app/profile/nyskytigers.bsky.social) 📺 [YouTube](www.youtube.com/@NYskytigers)

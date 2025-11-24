@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.4.0] - 2025-11-23
+### 🚀 Major Features
+- Multi-Site Support: Added dedicated tabs for Adobe Stock and iStock.
+- iStock Exporter: Generates individual CSV files for each image and bundles them into a single ZIP file download.
+- Adobe Stock Exporter: Includes specific category mapping and release name inputs.
+- EPS Extension Handling: All exported CSVs now automatically reference filenames with .eps extensions (replacing .jpg/.png) to match vector submission workflows.
+
+### 🏗️ Architecture (OOP Refactor)
+- Refactored monolithic app.py into a modular Object-Oriented structure:
+  - models.py: Handles AI model loading (BLIP/KeyBERT) and inference.
+  - exporters.py: Contains logic for Shutterstock, Adobe Stock, and iStock exporters.
+  - app.py: Main entry point orchestrating the UI tabs.
+
+### ⚡ Improvements
+- Fast Model Loading: Enabled use_fast=True for BLIP processor to remove Hugging Face warnings and improve speed.
+- Unified Batch Editing: The "Apply to All" logic is now standardized across all three exporters.
+
 ## [v1.3.1] - 2025-10-16
 ### 🧩 Added
 - “Apply to All” feature for captions and keywords
