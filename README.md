@@ -1,7 +1,7 @@
-# 📸 Shutterstock Content Upload Generator  
+# 📸 Stock Image Content Upload Generator  
 > Built by [@NYskytigers](https://github.com/nyskytigers)  
-> Generate professional Shutterstock-style captions and keywords automatically.  
-> Export your metadata as `shutterstock_content_upload.csv` in one click.
+> Generate professional Shutterstock, Adobe Stock, iStock captions and keywords automatically.  
+> Export your metadata in .csv or .zip in one click.
 <p style="text-align:center;">
   <a href="https://www.python.org/downloads/release/python-3100/">
     <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+">
