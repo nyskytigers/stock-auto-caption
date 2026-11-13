@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stock-auto-caption"
+version = "1.5.0.dev0"
+description = "Local stock metadata processing and marketplace CSV exports"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = []
+
+[project.optional-dependencies]
+images = ["Pillow>=10,<12"]
+ai = ["Pillow>=10,<12", "torch>=2.4,<2.7", "transformers>=4.34,<4.53", "keybert==0.9.0", "sentence-transformers>=2.7,<4", "numpy>=1.26,<2"]
+ui = ["streamlit==1.50.0", "pandas>=2.2,<2.4"]
+
+[project.scripts]
+stock-metadata = "stock_metadata.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["stock_metadata*"]

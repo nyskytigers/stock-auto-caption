@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 from models import ModelLoader
 from exporters import ShutterstockExporter, AdobeStockExporter, IStockExporter
 
@@ -10,7 +11,7 @@ class StockImageApp:
     """
     def __init__(self):
         # Load models once.
-        self.models = ModelLoader()
+        self.models = None
         
         # Define all available exporters
         self.exporters = {
@@ -30,7 +31,7 @@ class StockImageApp:
 
         # Load external CSS
         try:
-            with open("style.css", encoding="utf-8") as f:
+            with Path(__file__).with_name("style.css").open(encoding="utf-8") as f:
                 st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
         except FileNotFoundError:
             st.warning("style.css not found. Skipping CSS load.")
@@ -58,6 +59,14 @@ class StockImageApp:
             st.info("Upload one or more images above to begin.")
             self._draw_footer()
             return # Stop execution if no files
+
+        if self.models is None:
+            try:
+                self.models = ModelLoader()
+            except Exception as error:
+                st.error(f"Local model initialization failed: {error}")
+                st.info("Install the AI dependencies and cache model weights, then retry.")
+                return
 
         # Create tabs based on the exporter names
         tab_list = st.tabs(self.exporters.keys())
@@ -88,4 +97,5 @@ class StockImageApp:
 if __name__ == "__main__":
     app = StockImageApp()
     app.run()
+
 

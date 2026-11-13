@@ -1,114 +1,158 @@
-# 📸 Stock Image Content Upload Generator  
-> Built by [@NYskytigers](https://github.com/nyskytigers)  
-> Generate professional Shutterstock, Adobe Stock, iStock captions and keywords automatically.  
-> Export your metadata in .csv or .zip in one click.
-<p style="text-align:center;">
-  <a href="https://www.python.org/downloads/release/python-3100/">
-    <img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+">
-  </a>
-  <a href="https://www.streamlit.io/">
-    <img src="https://img.shields.io/badge/Framework-Streamlit-red.svg" alt="Streamlit">
-  </a>
-  <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
-  </a>
-  <a href="https://huggingface.co/Salesforce/blip-image-captioning-base">
-    <img src="https://img.shields.io/badge/Model-BLIP-blueviolet" alt="BLIP Model">
-  </a>
-  <a href="https://github.com/MaartenGr/KeyBERT">
-    <img src="https://img.shields.io/badge/Library-KeyBERT-orange" alt="KeyBERT Library">
-  </a>
-  <a href="https://github.com/psf/black">
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black">
-  </a>
-</p>
+# Stock-Auto-Caption
 
-Automatically generate **Shutterstock-ready captions and SEO keywords** from your stock photos and images — powered by **BLIP** (image captioning) and **KeyBERT** (keyword extraction).  
-This app runs **100% locally** — no API key or internet connection required after initial setup.
+Local BLIP captions, KeyBERT keywords and reviewable stock metadata exports.
+Existing Streamlit application and Shutterstock, Adobe Stock and legacy iStock
+Creative Illustration exports remain available. No paid API or credentials needed.
 
-## 🚀 Features
-- 🧠 **AI caption generation** using the BLIP model (`Salesforce/blip-image-captioning-base`)
-- 🔑 **Keyword extraction** using KeyBERT (`all-MiniLM-L6-v2`)
-- 🗂️ **Export to CSV format** 
-- ✏️ **Full Editing Control**
-- 🎨 **Category and metadata selection** 
-- 💾 Works completely offline — **no OpenAI or external APIs needed**
+## Install and run
 
----
+Python 3.10+:
 
-## 🛠️ Requirements
-- Python **3.10+**
-- A virtual environment (`venv` recommended)
-- Packages listed in [`requirements.txt`](./requirements.txt)
+```sh
+git clone https://github.com/nyskytigers/stock-auto-caption.git
+cd stock-auto-caption
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+python -m pip install -e ".[ai,ui]"
+streamlit run app.py
+```
 
----
+The existing `pip install -r requirements.txt` route still works. The checked-in
+requirements-lock.txt describes an older environment; regenerate it only after a
+clean model smoke test. This change keeps existing model version constraints,
+rather than combining architecture changes with an untested ML upgrade.
 
-## ⚙️ Installation
+For metadata-only CLI/package usage, `pip install -e .` installs no runtime
+dependencies. Add `.[images]` for decoding images, or `.[ai]` for local inference.
+First model initialization may download BLIP and MiniLM weights. Subsequent
+offline use requires their complete caches; no offline guarantee on a fresh install.
 
-1. **Clone this repository**
-   ```bash
-   git clone https://github.com/nyskytigers/stock-auto-caption.git
-   cd stock-auto-caption
+## Architecture and compatibility
 
-2. **Create and activate a virtual environment**
-   ```
-    python -m venv venv
-   ```
-   - On Windows
-   ```
-     venv\Scripts\activate
-   ```
-   - On macOS/Linux
-   ```
-     # source venv/bin/activate  
-   ```
-3. **Install dependencies**
-   ```
-    pip install -r requirements.txt
+- `stock_metadata/core.py`: caption/keyword normalization, metadata records and
+  read-only full-resolution RGB/EXIF-aware image processing.
+- `stock_metadata/csv_export.py`: shared field validation, UTF-8 CSV and iStock ZIP.
+- `stock_metadata/backends.py`: opt-in BLIP/KeyBERT, no Streamlit dependency.
+- `stock_metadata/cli.py`: deterministic, nonrecursive batch workflow.
+- Root `app.py`, `models.ModelLoader` and three exporter classes retain their
+  entry points. UI edits and batch append controls remain available.
 
-4. ▶️ **Run the App**  
-   ```
-    streamlit run app.py
-   ```
+Original filenames and extensions now remain exact. EPS rewriting was a bug:
+this software never converted rasters into vectors. Invalid fields block export
+instead of truncating or padding metadata. Proper-name capitalization is retained;
+category names no longer become speculative keywords. iStock ZIP entries now use
+the complete basename, such as `photo.jpg.csv`, avoiding same-stem collisions.
 
-   Then open your browser and go to: http://localhost:8501  
+## CLI demo
 
-## 📦 Output  
-All generated results can be downloaded as a Shutterstock-compatible CSV file(sutterstock_content_upload.csv):  
+Create `reviewed.json` using exact filenames that exist directly in your image
+directory:
 
-Shutterstock Example  
-| Filename | Description | Keywords | Categories | Editorial | Mature content | Illustration |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| photo1.jpg | Close-up portrait of a cat | cat, feline, pet, cute, whiskers, animal | Animals/Wildlife | no | no | yes |  
+```json
+{
+  "mug.jpg": {
+    "caption": "White ceramic coffee mug on an oak table",
+    "keywords": ["coffee mug", "white", "ceramic", "oak table", "natural light", "window light", "drinkware"],
+    "category": 4,
+    "categories": ["Objects"]
+  }
+}
+```
 
-Adobe Stock Example  
-| Filename | Title | Keywords | Category | Releases |
-| :--- | :--- | :--- | :--- | :--- |
-| photo2.jpg | A beautiful mountain landscape | mountain, landscape, nature, sky, clouds | 12 |  |
+```sh
+stock-metadata --input-dir ./photos --marketplace adobe --metadata-json ./reviewed.json --output ./adobe.csv
+stock-metadata --input-dir ./photos --marketplace shutterstock --metadata-json ./reviewed.json --output ./shutterstock.csv
+stock-metadata --input-dir ./photos --marketplace istock --metadata-json ./reviewed.json --istock-zip --output ./istock.zip
+# Explicit opt-in: local model inference, potentially downloads weights
+stock-metadata --input-dir ./photos --marketplace adobe --local-ai --output ./generated.csv
+# Equivalent without installing the console entry point:
+python -m stock_metadata --help
+```
 
-iStock (Zipped CSVs)
+Quote paths containing spaces. `--categories "Objects,Nature"` overrides
+Shutterstock categories; `--category 4` overrides the Adobe category. The iStock
+CLI defaults to one CSV; `--istock-zip` matches the legacy per-image ZIP workflow.
 
-Generates istock_metadata.zip containing one CSV per image:
-File: photo3.csv
-| file name | description | country | title | keywords | color |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| photo3.eps | Urban city skyline | | Urban city skyline | city, urban, sky... | yes |
+Only direct JPG/JPEG/PNG children are considered. Supplied-metadata mode checks
+file presence and paths but deliberately does not decode images or infer their
+contents. Local-AI mode decodes before inference. Unsupported extensions are
+ignored. No image is written, renamed or embedded with metadata. Symlink sources
+are rejected; output must be new, have the right extension and sit outside the
+input directory. Output parents must already exist. Exclusive creation prevents
+overwrites; this is designed for user-controlled directories, not adversarial
+concurrent filesystem mutation.
 
-## 🧠 Models Used  
-[BLIP: Bootstrapped Language-Image Pretraining](https://huggingface.co/Salesforce/blip-image-captioning-base)  
-→ Generates descriptive captions from images.
+Per-file failures appear as JSON objects on stderr. Valid rows still export:
+exit 0 = all processed successfully, 1 = partial batch, 2 = fatal/no valid rows.
+A final JSON summary reports exported and failed counts. No retry loop or uploads.
+Fix errors and rerun to a new output path.
 
-[KeyBERT](https://github.com/MaartenGr/KeyBERT)  
-→ Extracts SEO-friendly keywords from text using sentence embeddings.
+## Marketplace scope
 
+| Export | Layout | Remaining review |
+| --- | --- | --- |
+| Shutterstock | Filename, Description, Keywords, Categories, Illustration, Mature Content, Editorial | Relevance, category choices, editorial facts and rights |
+| Adobe | Filename, Title, Keywords, Category, Releases | Plain-text title, uploaded release files, current template |
+| iStock | file name, description, country, title, keywords, color | Legacy Creative Illustration only; verify current ESP template and controlled vocabulary |
 
-## 🧩 **Future Plans**  
-💬 User feedback saving (learning system)  
-🔍 CLIP-based similarity search for smarter keyword suggestions  
-🌐 Public web version hosted via Streamlit Cloud or Hugging Face Spaces  
+See [dated rule sources and validation boundaries](docs/platform-rules.md).
+No unverified iStock numeric limits are enforced. The existing schema is documented
+by DeepMeta 3, which is unsupported; current ESP acceptance needs account testing.
+Do not advertise universal iStock photo/video compatibility.
 
-🪪 License
-This project is open-source and available under the [MIT License](https://github.com/nyskytigers/stock-auto-caption/blob/main/LICENSE).
+## Agensi skill
 
-👤 Author
-@NYskytigers 🕸️ [Website](nyskytigeres.com) 🦋 [Bluesky](bsky.app/profile/nyskytigers.bsky.social) 📺 [YouTube](www.youtube.com/@NYskytigers)
+[skills/stock-metadata-assistant/SKILL.md](skills/stock-metadata-assistant/SKILL.md)
+provides a text-first agent workflow, a full demo and an independent stdlib export
+script. It works from user descriptions without Python, BLIP or visual access.
+Its optional installed CLI is a separate capability.
+
+```sh
+python tools/package_skill.py
+```
+
+Creates `dist/stock-metadata-assistant.zip` from an explicit text-only allowlist.
+No environments, model weights, executables, images or credentials are packaged.
+Scripts run independently when copied unchanged to temporary files, per Agensi's
+rules. The standalone script takes a JSON list, unlike the CLI's keyed object.
+See [full demo](skills/stock-metadata-assistant/references/demo.md).
+Nothing publishes to Agensi automatically.
+
+## Privacy and limitations
+
+Local inference runs on the machine hosting Python. First use downloads models
+from their hosts. The core CSV tools and standalone script make no network calls.
+The UI loads a Google Font; browsers may contact Google. A hosted Streamlit app
+receives images on its host, so it is not equivalent to running on your computer.
+Agent-native prompts and attachments follow the agent provider's privacy policy.
+No telemetry or marketplace uploader is added.
+
+AI can hallucinate and KeyBERT cannot recover visual details absent from the
+caption. Review every record. Validators cannot establish rights, releases,
+editorial accuracy, platform acceptance or keyword relevance. BLIP inference can
+be slow on CPU. [Optional CLIP relevance enhancement](docs/clip-design.md) is a
+design only, with no mandatory dependencies or bundled weights.
+
+## Tests and release
+
+```sh
+python -m pip install -e ".[images]"
+python -m unittest discover -s tests -v
+python -m compileall -q stock_metadata app.py models.py exporters.py
+python tools/package_skill.py
+```
+
+Tests use fake inference backends, generated tiny images and temporary directories;
+they do not download models or contact marketplaces. Image tests skip if Pillow
+is absent; UI adapter tests skip if Streamlit/Pillow is absent. CI installs those
+dependencies in separate jobs. See [actual validation results](docs/validation.md),
+[audit and plan](docs/audit-and-plan.md) and [release checklist](docs/release-checklist.md).
+
+## License
+
+[MIT](LICENSE), including the skill and exporter script. BLIP, MiniLM, model weights
+and third-party dependencies have their own licenses; review their model cards
+and terms before redistributing them. Users retain responsibility for their
+images, permissions and releases.
+

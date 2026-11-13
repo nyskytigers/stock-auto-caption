@@ -3,3 +3,13 @@ __pycache__/
 *.pyc
 .DS_Store
 user_feedback.csv
+.venv/
+dist/
+build/
+*.egg-info/
+.env
+.env.*
+*.pt
+*.pth
+*.safetensors
+

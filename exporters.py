@@ -1,10 +1,8 @@
 import streamlit as st
-import pandas as pd
-import io
-import zipfile
-import os
 from PIL import Image
-from models import ModelLoader # Import our model loader
+from models import ModelLoader
+from stock_metadata import Metadata, process_image, export_csv, export_istock_zip
+from stock_metadata.core import clean_keywords
 
 class BaseExporter:
     """
@@ -55,7 +53,7 @@ class BaseExporter:
                         original_str = st.session_state.get(key, "")
                         original_list = [k.strip() for k in original_str.split(",") if k.strip()]
                         master_list = [k.strip() for k in global_keywords.split(",") if k.strip()]
-                        deduplicated_list = list(dict.fromkeys(original_list + master_list))
+                        deduplicated_list = clean_keywords(original_list + master_list)
                         st.session_state[key] = ", ".join(deduplicated_list)
                     with key_msg_col: st.markdown("✅ Keywords appended.")
                 else:
@@ -69,6 +67,36 @@ class BaseExporter:
     def draw_export_button(self, uploaded_files: list, config: dict):
         """Draws the final 'Download CSV' button."""
         raise NotImplementedError
+
+
+    def download_metadata(self, uploaded_files, config, marketplace, zipped=False):
+        records = []
+        try:
+            for file in uploaded_files:
+                records.append(Metadata(
+                    filename=file.name,
+                    caption=st.session_state.get(f"{self.key_prefix}caption_{file.name}", ""),
+                    keywords=st.session_state.get(f"{self.key_prefix}keywords_{file.name}", ""),
+                    categories=config.get("categories", []),
+                    category=config.get("category_id", ""),
+                    releases=config.get("releases", "").strip(),
+                    editorial=config.get("editorial", "no"),
+                    mature=config.get("mature", "no"),
+                    illustration=config.get("illustration", "no"),
+                    country=config.get("country", ""),
+                    color=config.get("color", "yes"),
+                ))
+            data = export_istock_zip(records) if zipped else export_csv(records, marketplace)
+        except (ValueError, TypeError) as error:
+            st.error(f"Export blocked: {error}. Correct metadata before downloading.")
+            return
+        extension = "zip" if zipped else "csv"
+        st.download_button(
+            f"Download {self.site_name} {extension.upper()}", data,
+            f"{marketplace}_metadata.{extension}",
+            "application/zip" if zipped else "text/csv",
+            key=f"{self.key_prefix}download_btn",
+        )
 
 
 class ShutterstockExporter(BaseExporter):
@@ -117,64 +145,49 @@ class ShutterstockExporter(BaseExporter):
     def draw_image_editors(self, uploaded_files: list, config: dict, models: ModelLoader):
         st.markdown("### 🖼️ Preview & Edit Metadata")
         
-        selected_categories = config.get("categories", [])
-        
         for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file)
+            try:
+                uploaded_file.seek(0)
+                with Image.open(uploaded_file) as source:
+                    image = source.copy()
+            except Exception as error:
+                st.error(f"Cannot decode {uploaded_file.name}: {error}")
+                continue
             caption_key = f"{self.key_prefix}caption_{uploaded_file.name}"
             keywords_key = f"{self.key_prefix}keywords_{uploaded_file.name}"
 
             with st.container():
                 col1, col2 = st.columns([1, 2], vertical_alignment="center")
                 with col1:
-                    image.thumbnail((220, 220))
-                    st.image(image, caption=None, width=220)
+                    preview = image.copy()
+                    preview.thumbnail((220, 220))
+                    st.image(preview, caption=None, width=220)
+                    preview.close()
                 with col2:
                     st.text_input("Filename", value=uploaded_file.name, key=f"{self.key_prefix}filename_{uploaded_file.name}", disabled=True)
                     
                     if caption_key not in st.session_state:
                         with st.spinner("🔎 Generating metadata..."):
                             try:
-                                raw_caption = models.generate_caption(image)
-                                caption, keywords = models.refine_caption_and_keywords(raw_caption, selected_categories)
+                                uploaded_file.seek(0)
+                                record = process_image(uploaded_file, models, filename=uploaded_file.name)
+                                caption, keywords = record.caption, ", ".join(record.keywords)
                                 st.session_state[caption_key] = caption
                                 st.session_state[keywords_key] = keywords
                             except Exception as e:
                                 st.error(f"Error processing {uploaded_file.name}: {e}")
-                                st.session_state[caption_key] = "Error"
-                                st.session_state[keywords_key] = "Error"
+                                st.session_state[caption_key] = ""
+                                st.session_state[keywords_key] = ""
+                                st.caption("Enter reviewed metadata manually or re-upload to retry.")
                     
                     # Note: Label is "Caption" here
                     st.text_area("Caption", height=70, key=caption_key) 
                     st.text_area("Keywords (comma-separated)", height=110, key=keywords_key)
+                image.close()
                 st.markdown("<hr style='border:0.5px solid #3a3a3a; margin:1.5rem 0;'/>", unsafe_allow_html=True)
 
     def draw_export_button(self, uploaded_files: list, config: dict):
-        st.markdown("### ⬇️ Export Shutterstock CSV")
-        final_results = []
-        
-        for uploaded_file in uploaded_files:
-            # CHANGE: Replace extension with .eps
-            filename_eps = os.path.splitext(uploaded_file.name)[0] + ".eps"
-
-            final_results.append([
-                filename_eps,
-                st.session_state.get(f"{self.key_prefix}caption_{uploaded_file.name}", "").strip(),
-                st.session_state.get(f"{self.key_prefix}keywords_{uploaded_file.name}", "").strip(),
-                ",".join(config.get("categories", [])),
-                config.get("editorial", "no"),
-                config.get("mature", "no"),
-                config.get("illustration", "no")
-            ])
-            
-        df = pd.DataFrame(
-            final_results, 
-            columns=["Filename", "Description", "Keywords", "Categories", "Editorial", "Mature content", "Illustration"]
-        )
-        csv = df.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            "⬇️ Download Shutterstock CSV", csv, "shutterstock_upload.csv", "text/csv", key=f"{self.key_prefix}download_btn"
-        )
+        self.download_metadata(uploaded_files, config, "shutterstock", False)
 
 
 class AdobeStockExporter(BaseExporter):
@@ -204,7 +217,7 @@ class AdobeStockExporter(BaseExporter):
         )
         
         releases_input = st.text_input(
-            "Releases (The names you gave to the releases when you uploaded them on Adobe Stock)", 
+            "Releases (Exact uploaded JPEG release filename)",
             key=f"{self.key_prefix}releases"
         )
             
@@ -221,64 +234,49 @@ class AdobeStockExporter(BaseExporter):
     def draw_image_editors(self, uploaded_files: list, config: dict, models: ModelLoader):
         st.markdown("### 🖼️ Preview & Edit Metadata")
         
-        # Adobe only has one category, pass it as a list for the refiner
-        selected_category_name = config.get("category_name")
-        category_list = [selected_category_name] if selected_category_name else []
-        
         for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file)
+            try:
+                uploaded_file.seek(0)
+                with Image.open(uploaded_file) as source:
+                    image = source.copy()
+            except Exception as error:
+                st.error(f"Cannot decode {uploaded_file.name}: {error}")
+                continue
             caption_key = f"{self.key_prefix}caption_{uploaded_file.name}"
             keywords_key = f"{self.key_prefix}keywords_{uploaded_file.name}"
 
             with st.container():
                 col1, col2 = st.columns([1, 2], vertical_alignment="center")
                 with col1:
-                    image.thumbnail((220, 220))
-                    st.image(image, caption=None, width=220)
+                    preview = image.copy()
+                    preview.thumbnail((220, 220))
+                    st.image(preview, caption=None, width=220)
+                    preview.close()
                 with col2:
                     st.text_input("Filename", value=uploaded_file.name, key=f"{self.key_prefix}filename_{uploaded_file.name}", disabled=True)
                     
                     if caption_key not in st.session_state:
                         with st.spinner("🔎 Generating metadata..."):
                             try:
-                                raw_caption = models.generate_caption(image)
-                                caption, keywords = models.refine_caption_and_keywords(raw_caption, category_list)
+                                uploaded_file.seek(0)
+                                record = process_image(uploaded_file, models, filename=uploaded_file.name)
+                                caption, keywords = record.caption, ", ".join(record.keywords)
                                 st.session_state[caption_key] = caption
                                 st.session_state[keywords_key] = keywords
                             except Exception as e:
                                 st.error(f"Error processing {uploaded_file.name}: {e}")
-                                st.session_state[caption_key] = "Error"
-                                st.session_state[keywords_key] = "Error"
+                                st.session_state[caption_key] = ""
+                                st.session_state[keywords_key] = ""
+                                st.caption("Enter reviewed metadata manually or re-upload to retry.")
                     
                     # Note: Label is "Title" here
                     st.text_area("Title", height=70, key=caption_key)
                     st.text_area("Keywords (comma-separated)", height=110, key=keywords_key)
+                image.close()
                 st.markdown("<hr style='border:0.5px solid #3a3a3a; margin:1.5rem 0;'/>", unsafe_allow_html=True)
 
     def draw_export_button(self, uploaded_files: list, config: dict):
-        st.markdown("### ⬇️ Export Adobe Stock CSV")
-        final_results = []
-        
-        for uploaded_file in uploaded_files:
-            # CHANGE: Replace extension with .eps
-            filename_eps = os.path.splitext(uploaded_file.name)[0] + ".eps"
-
-            final_results.append([
-                filename_eps,
-                st.session_state.get(f"{self.key_prefix}caption_{uploaded_file.name}", "").strip(),
-                st.session_state.get(f"{self.key_prefix}keywords_{uploaded_file.name}", "").strip(),
-                config.get("category_id", ""),
-                config.get("releases", "").strip()
-            ])
-            
-        df = pd.DataFrame(
-            final_results, 
-            columns=["Filename", "Title", "Keywords", "Category", "Releases"]
-        )
-        csv = df.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            "⬇️ Download Adobe Stock CSV", csv, "adobestock_upload.csv", "text/csv", key=f"{self.key_prefix}download_btn"
-        )
+        self.download_metadata(uploaded_files, config, "adobe", False)
 
 class IStockExporter(BaseExporter):
     """
@@ -290,88 +288,53 @@ class IStockExporter(BaseExporter):
 
     def draw_config_options(self) -> dict:
         st.subheader("iStock Generator")
-        st.info("ℹ️ iStock does not require specific categories for this tool.")
-        return {} # No specific config needed for iStock
+        st.info("Legacy Creative Illustration CSV. Verify your ESP template and resolve controlled-vocabulary keywords. Complete country in ESP before submitting.")
+        country = st.text_input("Country (confirm against your ESP template)", key=f"{self.key_prefix}country")
+        color = st.selectbox("Color illustration?", ["yes", "no"], key=f"{self.key_prefix}color")
+        return {"country": country.strip(), "color": color}
 
     def draw_image_editors(self, uploaded_files: list, config: dict, models: ModelLoader):
         st.markdown("### 🖼️ Preview & Edit Metadata")
         
         for uploaded_file in uploaded_files:
-            image = Image.open(uploaded_file)
+            try:
+                uploaded_file.seek(0)
+                with Image.open(uploaded_file) as source:
+                    image = source.copy()
+            except Exception as error:
+                st.error(f"Cannot decode {uploaded_file.name}: {error}")
+                continue
             caption_key = f"{self.key_prefix}caption_{uploaded_file.name}"
             keywords_key = f"{self.key_prefix}keywords_{uploaded_file.name}"
 
             with st.container():
                 col1, col2 = st.columns([1, 2], vertical_alignment="center")
                 with col1:
-                    image.thumbnail((220, 220))
-                    st.image(image, caption=None, width=220)
+                    preview = image.copy()
+                    preview.thumbnail((220, 220))
+                    st.image(preview, caption=None, width=220)
+                    preview.close()
                 with col2:
                     st.text_input("Filename", value=uploaded_file.name, key=f"{self.key_prefix}filename_{uploaded_file.name}", disabled=True)
                     
                     if caption_key not in st.session_state:
                         with st.spinner("🔎 Generating metadata..."):
                             try:
-                                raw_caption = models.generate_caption(image)
-                                # Pass empty list as categories
-                                caption, keywords = models.refine_caption_and_keywords(raw_caption, [])
+                                uploaded_file.seek(0)
+                                record = process_image(uploaded_file, models, filename=uploaded_file.name)
+                                caption, keywords = record.caption, ", ".join(record.keywords)
                                 st.session_state[caption_key] = caption
                                 st.session_state[keywords_key] = keywords
                             except Exception as e:
                                 st.error(f"Error processing {uploaded_file.name}: {e}")
-                                st.session_state[caption_key] = "Error"
-                                st.session_state[keywords_key] = "Error"
+                                st.session_state[caption_key] = ""
+                                st.session_state[keywords_key] = ""
+                                st.caption("Enter reviewed metadata manually or re-upload to retry.")
                     
                     st.text_area("Title/Description", height=70, key=caption_key)
                     st.text_area("Keywords (comma-separated)", height=110, key=keywords_key)
+                image.close()
                 st.markdown("<hr style='border:0.5px solid #3a3a3a; margin:1.5rem 0;'/>", unsafe_allow_html=True)
 
     def draw_export_button(self, uploaded_files: list, config: dict):
-        st.markdown("### ⬇️ Export iStock CSVs (ZIP)")
-        
-        # We need to create a ZIP file in memory containing multiple CSVs
-        zip_buffer = io.BytesIO()
-        
-        with zipfile.ZipFile(zip_buffer, "w") as zf:
-            for uploaded_file in uploaded_files:
-                # 1. Prepare data for this single image
-                filename = uploaded_file.name
-                caption = st.session_state.get(f"{self.key_prefix}caption_{filename}", "").strip()
-                keywords = st.session_state.get(f"{self.key_prefix}keywords_{filename}", "").strip()
-
-                # CHANGE: Replace extension with .eps for the filename column within the CSV
-                name_without_ext = os.path.splitext(filename)[0]
-                filename_eps = name_without_ext + ".eps"
-                
-                # Columns: file name | description | country | title | keywords | color
-                row_data = [
-                    filename_eps, # <--- Used here
-                    caption,    # description
-                    "",         # country (empty)
-                    caption,    # title (same as description)
-                    keywords,   # keywords
-                    "yes"       # color (always yes)
-                ]
-                
-                # 2. Create a mini DataFrame for this file
-                df = pd.DataFrame([row_data], columns=["file name", "description", "country", "title", "keywords", "color"])
-                
-                # 3. Convert DataFrame to CSV string
-                csv_data = df.to_csv(index=False).encode("utf-8")
-                
-                # 4. Add to zip
-                # The CSV file itself is named "filename.csv"
-                csv_filename = f"{name_without_ext}.csv"
-                
-                zf.writestr(csv_filename, csv_data)
-        
-        # Finalize zip
-        zip_buffer.seek(0)
-        
-        st.download_button(
-            "⬇️ Download All iStock CSVs (ZIP)", 
-            zip_buffer, 
-            "istock_metadata.zip", 
-            "application/zip", 
-            key=f"{self.key_prefix}download_btn"
-        )
+        self.download_metadata(uploaded_files, config, "istock", True)
