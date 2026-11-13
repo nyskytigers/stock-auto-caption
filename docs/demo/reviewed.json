@@ -1,0 +1,18 @@
+[
+  {
+    "filename": "mug.JPG",
+    "caption": "White ceramic coffee mug on an oak table",
+    "keywords": ["coffee mug", "white", "ceramic", "oak table", "natural light", "window light", "drinkware"],
+    "category": 4,
+    "categories": ["Objects"],
+    "illustration": "no"
+  },
+  {
+    "filename": "abstract.png",
+    "caption": "Red circle overlapping a blue rectangle on white",
+    "keywords": ["red circle", "blue rectangle", "geometric shapes", "overlap", "white background", "abstract", "illustration"],
+    "category": 8,
+    "categories": ["Abstract"],
+    "illustration": "yes"
+  }
+]

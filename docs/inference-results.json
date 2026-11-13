@@ -1,0 +1,69 @@
+{
+  "kind": "real offline inference",
+  "python": "3.10.11",
+  "fixture_scope": "synthetic raster illustrations only; no photo quality claim",
+  "versions": {
+    "torch": "2.6.0",
+    "transformers": "4.52.4",
+    "keybert": "0.9.0",
+    "sentence-transformers": "3.4.1",
+    "Pillow": "11.3.0"
+  },
+  "results": [
+    {
+      "filename": "cup.png",
+      "caption": "a coffee cup on a table",
+      "keywords": [
+        "coffee cup",
+        "cup table",
+        "coffee",
+        "cup",
+        "table"
+      ],
+      "seconds": 0.828,
+      "source_sha256": "1f3d1e40c0ae0b1213566c17858c3fa887722b784ac6c88169acd5c323e2eea5",
+      "unchanged": true
+    },
+    {
+      "filename": "flower.png",
+      "caption": "a black and white logo for a flower shop",
+      "keywords": [
+        "logo flower",
+        "flower shop",
+        "logo",
+        "flower",
+        "white logo",
+        "shop",
+        "black white",
+        "black",
+        "white"
+      ],
+      "seconds": 0.891,
+      "source_sha256": "de4d702af66cbe44ebdaccae4cba8f604fb41f83fc78a3b3a3db278b82c2dcce",
+      "unchanged": true
+    },
+    {
+      "filename": "abstract.png",
+      "caption": "a red and blue circle with a white background",
+      "keywords": [
+        "circle white",
+        "blue circle",
+        "circle",
+        "white background",
+        "background",
+        "red blue",
+        "white",
+        "blue",
+        "red"
+      ],
+      "seconds": 0.891,
+      "source_sha256": "0cad62aa32be2a984c7d78ce145301621752013807c03e4eb03906d6b5cc5db4",
+      "unchanged": true
+    }
+  ],
+  "model_revision": "82a37760796d32b1411fe092ab5d4e227313294b",
+  "device": "cpu",
+  "load_seconds": 8.172,
+  "status": "PASS",
+  "total_seconds": 10.828
+}

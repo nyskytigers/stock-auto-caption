@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "status": "NOT TESTED",
+  "scope": "human judgments plus local validator snapshot, not live portal acceptance",
+  "dataset_sha256": "a009836af477686ffa0a042eea7fd6658e297a45d2d9d0a9c488f5d37118ec8e",
+  "raw_sha256": "5bce8ede8a433f0a73ce44fdfa506e234e82f4324111fe4ac663eb6f8423fd04",
+  "review_sha256": "f992a38a75747ee42cff46842b1c72b4de40137a7b058fc085e6e6fda7164f51",
+  "coverage": {
+    "planned": 24,
+    "labeled": 0,
+    "inferred": 0,
+    "human_assessed": 0,
+    "by_kind": {
+      "photograph": {
+        "planned": 12,
+        "assessed": 0
+      },
+      "illustration": {
+        "planned": 12,
+        "assessed": 0
+      }
+    }
+  },
+  "counts": {},
+  "metrics": {
+    "caption_supported_claim_rate": null,
+    "hallucinated_claim_rate": null,
+    "uncertain_claim_rate": null,
+    "missing_object_rate": null,
+    "keyword_relevance_rate": null,
+    "keyword_uncertain_rate": null,
+    "raw_adobe_structural_pass_rate": null,
+    "raw_shutterstock_structural_pass_rate": null,
+    "raw_duplicate_rate": null,
+    "mean_review_seconds": null,
+    "mean_edit_operations": null
+  },
+  "items": []
+}

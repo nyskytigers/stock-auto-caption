@@ -1,0 +1,489 @@
+{
+  "schema_version": 1,
+  "dataset_id": "stock-metadata-quality-v1",
+  "status": "NOT TESTED",
+  "seed": 0,
+  "selection_policy": "12 photographs + 12 illustrations; no internet image acquisition; manual labels before model output",
+  "items": [
+    {
+      "id": "photo-01",
+      "kind": "photograph",
+      "stratum": "single object",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-02",
+      "kind": "photograph",
+      "stratum": "multiple objects",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-03",
+      "kind": "photograph",
+      "stratum": "indoor scene",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-04",
+      "kind": "photograph",
+      "stratum": "outdoor scene",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-05",
+      "kind": "photograph",
+      "stratum": "low light",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-06",
+      "kind": "photograph",
+      "stratum": "busy background",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-07",
+      "kind": "photograph",
+      "stratum": "small object",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-08",
+      "kind": "photograph",
+      "stratum": "text or logo",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-09",
+      "kind": "photograph",
+      "stratum": "unusual viewpoint",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-10",
+      "kind": "photograph",
+      "stratum": "negative space",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-11",
+      "kind": "photograph",
+      "stratum": "fine detail",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "photo-12",
+      "kind": "photograph",
+      "stratum": "ambiguous subject",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-01",
+      "kind": "illustration",
+      "stratum": "single object",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-02",
+      "kind": "illustration",
+      "stratum": "multiple objects",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-03",
+      "kind": "illustration",
+      "stratum": "indoor scene",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-04",
+      "kind": "illustration",
+      "stratum": "outdoor scene",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-05",
+      "kind": "illustration",
+      "stratum": "low light",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-06",
+      "kind": "illustration",
+      "stratum": "busy background",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-07",
+      "kind": "illustration",
+      "stratum": "small object",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-08",
+      "kind": "illustration",
+      "stratum": "text or logo",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-09",
+      "kind": "illustration",
+      "stratum": "unusual viewpoint",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-10",
+      "kind": "illustration",
+      "stratum": "negative space",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-11",
+      "kind": "illustration",
+      "stratum": "fine detail",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    },
+    {
+      "id": "illus-12",
+      "kind": "illustration",
+      "stratum": "ambiguous subject",
+      "status": "pending",
+      "filename": null,
+      "sha256": null,
+      "rights": {
+        "basis": null,
+        "evidence": null
+      },
+      "labels": {
+        "annotator": null,
+        "labeled_at": null,
+        "objects": [],
+        "visible_attributes": [],
+        "forbidden_inferences": [],
+        "relevant_keyword_concepts": []
+      }
+    }
+  ]
+}

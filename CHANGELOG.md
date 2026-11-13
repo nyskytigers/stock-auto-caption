@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<<<<<<< HEAD
-## [v1.3.0] - 2025-10-16
-=======
+## [Unreleased]
+- Extract reusable metadata package, safe CLI and optional local AI backend.
+- Add shared CSV validation, independent Agensi skill, tests and CI.
+- Preserve basenames; fix Shutterstock headers and iStock ZIP collisions.
+- Resolve changelog conflict markers.
+
 ## [v1.4.0] - 2025-11-23
 ### 🚀 Major Features
 - Multi-Site Support: Added dedicated tabs for Adobe Stock and iStock.
@@ -25,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unified Batch Editing: The "Apply to All" logic is now standardized across all three exporters.
 
 ## [v1.3.1] - 2025-10-16
->>>>>>> 5501c00 (Release v1.4.0 – multi-site exporters, OOP refactor, EPS handling)
 ### 🧩 Added
 - “Apply to All” feature for captions and keywords
   - Users can now define a master caption and/or keyword set
@@ -102,3 +104,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Author:** [@NYskytigers](https://github.com/nyskytigers)  
 💡 Built for creators, photographers, and stock contributors — to simplify metadata generation through local AI.
+

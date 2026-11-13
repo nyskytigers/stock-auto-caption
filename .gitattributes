@@ -1,0 +1,2 @@
+# Preserve actual CSV writer output for byte-for-byte demo verification on all OSes.
+docs/demo/*.csv -text
