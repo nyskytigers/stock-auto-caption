@@ -37,6 +37,9 @@ def validate_manifest(manifest):
         raise ValueError("expected schema_version 1 and items list")
     if not 20 <= len(manifest["items"]) <= 30:
         raise ValueError("product benchmark must reserve 20–30 items")
+    seed = manifest.get("seed", 0)
+    if isinstance(seed, bool) or not isinstance(seed, int) or not 0 <= seed < 2**32:
+        raise ValueError("seed must be an integer in the unsigned 32-bit range")
     ids, filenames = set(), set()
     for item in manifest["items"]:
         identifier = safe_filename(item["id"])
@@ -103,6 +106,7 @@ def run(manifest, image_dir, backend):
             try:
                 generate = getattr(backend, "generate_raw_caption", backend.generate_caption)
                 caption = generate(image)
+                result["caption"] = caption  # retain BLIP output even if keyword extraction fails
                 candidates = backend.kw_model.extract_keywords(caption, keyphrase_ngram_range=(1, 2), stop_words="english", top_n=25)
             finally:
                 image.close()
@@ -128,6 +132,8 @@ def run(manifest, image_dir, backend):
         pass
     return {"schema_version": VERSION, "dataset_sha256": digest(manifest), "records": records,
             "provenance": {"backend": type(backend).__name__, "python": sys.version.split()[0],
+                           "seed": manifest.get("seed", 0),
+                           "keyword_parameters": {"ngram_range": [1, 2], "stop_words": "english", "top_n": 25},
                            "dependencies": versions, "keyword_revision": keyword_revision,
                            "device": str(getattr(getattr(backend, "model", None), "device", "not reported")),
                            "blip_revision": getattr(getattr(getattr(backend, "model", None), "config", None), "_commit_hash", None),
@@ -324,6 +330,10 @@ def main(argv=None):
                 if Path(args.images).resolve() in output.resolve().parents:
                     raise ValueError("benchmark outputs must be outside image directory")
                 from .backends import LocalBackend
+                import random
+                import torch
+                random.seed(manifest.get("seed", 0))
+                torch.manual_seed(manifest.get("seed", 0))
                 raw = run(manifest, args.images, LocalBackend(local_files_only=True))
                 output.mkdir()
                 write_new(output / "raw.json", raw)

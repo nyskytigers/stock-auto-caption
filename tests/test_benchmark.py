@@ -186,5 +186,13 @@ class BenchmarkTests(unittest.TestCase):
             self.assertEqual(row["caption"], "Raw cup caption")
             self.assertTrue(row["source_unchanged"])
             self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), item["sha256"])
+            class FailingKeywords:
+                def extract_keywords(self, *args, **kwargs):
+                    raise RuntimeError("keyword failure")
+            failing = Backend()
+            failing.kw_model = FailingKeywords()
+            failed = run(manifest, temp, failing)["records"][0]
+            self.assertEqual(failed["caption"], "Raw cup caption")
+            self.assertIn("keyword failure", failed["error"])
             item["sha256"] = "b" * 64
             self.assertIn("hash differs", run(manifest, temp, Backend())["records"][0]["error"])
