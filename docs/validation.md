@@ -1,5 +1,16 @@
 # Actual validation evidence
 
+## Product-quality framework follow-up
+
+Local suite expanded to 66 tests: 65 passed, 1 Windows symlink-permission skip.
+New tests cover metric denominators, honest empty reports, hash bindings, human
+review/export blocking, stale approvals, invalid reviewed fields, rights evidence,
+actual fake-backend image capture/immutability, raw decoder preservation, keyword
+candidate provenance and no padding. These are framework/unit checks, not measured
+quality on photographs or manually labeled illustrations. Actual benchmark
+coverage is 0/24; reports contain null scores. See docs/benchmark/README.md and
+PR #1 for the final source-commit CI results. Earlier evidence follows unchanged.
+
 ## v1.0.0-rc.1 follow-up
 
 2026-11-12, Windows Python 3.10.11: **51 tests, 50 passed, 1 skipped** (symlink

@@ -143,6 +143,14 @@ design only, with no mandatory dependencies or bundled weights.
 
 ## Tests and release
 
+[Product-quality benchmark](docs/benchmark/README.md): a 24-slot labeled-image
+protocol with separate raw/review artifacts, JSON/Markdown metrics, explicit human
+approval gates and no fabricated results. Dataset coverage currently remains zero.
+The benchmark runner is opt-in and is not a model-download or CI quality benchmark.
+See [portal import validation](docs/portal-import-validation.md) and
+[Agensi unpublished-draft validation](docs/agensi-draft-validation.md) for account
+tests that remain NOT TESTED. Existing CSV exports are drafts requiring human review.
+
 ```sh
 python -m pip install -e ".[images]"
 python -m unittest discover -s tests -v

@@ -4,6 +4,49 @@ Date: 2026-11-12 (America/Chicago). Scope: PR #1,
 feat/agent-skill-modernization. Baseline reviewed: 8f2bec1f55e2ca090663bf154510fd014c8b601c.
 The skill RC version is independent of the application's 1.5.0.dev0 version.
 
+## Product-quality validation follow-up
+
+The reproducible [benchmark framework](benchmark/README.md) now reserves **24
+samples: 12 photographs and 12 illustrations**. No authorized manually labeled
+dataset was supplied. Actual coverage is **0 labeled / 0 inferred / 0 assessed**;
+all quality metrics are null, not invented zeros or benchmark successes. See the
+[machine-readable report](benchmark/reports/not-tested.json) and matching
+[Markdown report](benchmark/reports/not-tested.md). The prior three synthetic
+smoke images remain separate historical execution evidence.
+
+Added measurements cover supported/unsupported/uncertain caption claims, omitted
+salient objects, human-rated keyword relevance, exact duplication, local per-site
+structural compliance, timed review effort and edit operations. Humans must label
+real images and assess raw outputs; these judgments are not inferred by unit tests.
+Raw decoder captions and direct KeyBERT candidates/scores are stored separately
+from corrected metadata, with source/dataset/review hash bindings and provenance.
+
+The new export-reviewed route requires complete dataset assessment, named human
+approval for the exact marketplace and metadata digest, all review checks resolved
+and valid corrected CSV fields. It blocks the whole export on incomplete or invalid
+records. Existing exporters remain backward-compatible **draft utilities**; CLI,
+UI and skill now explicitly say that structural validity is not submission readiness.
+
+Keyword candidate investigation is an evidence-bound experimental helper, not a
+validated improvement or default change. It preserves provenance, requires human
+review and never pads quotas. CLIP remains disabled, unvalidated and outside v1.0.
+
+New [portal checklist/result template](portal-import-validation.md) and
+[Agensi unpublished-draft checklist/result template](agensi-draft-validation.md)
+mark authenticated/live actions **NOT TESTED**. They do not authorize uploads.
+
+Local follow-up suite: **66 tests, 65 passed, 1 Windows symlink-permission skip**.
+Benchmark unit fixtures validate arithmetic, coverage, immutable raw capture and
+review gates; they are not real-world quality results. Latest commit CI evidence
+is recorded in PR #1 after its jobs complete. Historical results below retain
+their original scope. Updated ZIP/member hashes are in release-manifest.json.
+
+**ACTION REQUIRED:** supply 20–30 authorized images with actual human labels
+(planned balance 12+12), run cached inference, time real human review, adjudicate
+uncertain claims and set product acceptance criteria before making quality claims.
+Current templates/account imports, Agensi live validation and publication approval
+remain external release gates. No stock content is submitted by these tools.
+
 ## Status matrix
 
 | Status | Check | Evidence / boundary |

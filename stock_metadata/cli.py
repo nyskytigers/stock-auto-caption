@@ -90,7 +90,8 @@ def main(argv=None):
         payload = export_istock_zip(records) if args.istock_zip else export_csv(records, args.marketplace)
         with output.open("xb") as target:
             target.write(payload)
-        print(json.dumps({"exported": len(records), "failed": len(errors), "output": str(output)}))
+        print(json.dumps({"exported": len(records), "failed": len(errors), "output": str(output),
+                          "review_status": "DRAFT_REQUIRES_HUMAN_REVIEW"}))
         return 1 if errors else 0
     except (OSError, ValueError, TypeError, RuntimeError) as error:
         print(f"Error: {error}", file=sys.stderr)

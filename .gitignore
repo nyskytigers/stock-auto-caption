@@ -12,4 +12,6 @@ build/
 *.pt
 *.pth
 *.safetensors
+benchmark-data/
+benchmark-runs/
 

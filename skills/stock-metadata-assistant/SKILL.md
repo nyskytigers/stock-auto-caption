@@ -32,6 +32,9 @@ No paid API, account credentials, BLIP, Python or visual access is assumed.
 4. Show a table with filename, title, keywords and unresolved facts. Ask only for
    missing facts needed to make accurate metadata. Never pad keywords to satisfy
    a minimum. The user reviews relevance, rights, categories, flags and releases.
+   Keep raw proposals separate from corrected metadata. CSV remains a draft until
+   a human confirms every factual/platform field and resolves missing facts.
+   Structural validation alone does not establish submission readiness.
 5. Preserve every basename and extension exactly. Do not rename JPG/PNG to EPS,
    edit originals or embed metadata in images. Exclude unresolved records from
    final export and report them clearly. Duplicate basenames need user resolution.

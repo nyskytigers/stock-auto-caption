@@ -27,7 +27,7 @@ def main():
         payload = export_csv([Metadata(**row) for row in rows], args.marketplace)
         with target.open("xb") as handle:
             handle.write(payload)
-        print(f"Exported {len(rows)} records to {target}")
+        print(f"Exported draft metadata for {len(rows)} records to {target}; human review required")
         return 0
     except (OSError, ValueError, TypeError) as error:
         print(f"Error: {error}", file=sys.stderr)

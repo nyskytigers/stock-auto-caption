@@ -70,6 +70,7 @@ class BaseExporter:
 
 
     def download_metadata(self, uploaded_files, config, marketplace, zipped=False):
+        st.caption("Draft CSV only. Review facts, keywords, rights, releases and platform fields before submission.")
         records = []
         try:
             for file in uploaded_files:

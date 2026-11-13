@@ -22,11 +22,15 @@ class LocalBackend:
         self.kw_model = KeyBERT(model=keyword_model)
 
     def generate_caption(self, image):
+        return clean_caption(self.generate_raw_caption(image))
+
+    def generate_raw_caption(self, image):
+        """Unnormalized decoded BLIP text for benchmark/provenance capture."""
         import torch
         inputs = self.processor(image.convert("RGB"), return_tensors="pt")
         with torch.inference_mode():
             output = self.model.generate(**inputs)
-        return clean_caption(self.processor.decode(output[0], skip_special_tokens=True))
+        return self.processor.decode(output[0], skip_special_tokens=True)
 
     def refine_caption_and_keywords(self, raw_caption, selected_categories):
         # Categories are classification fields, not evidence of visible content.
