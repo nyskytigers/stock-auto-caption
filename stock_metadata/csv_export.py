@@ -49,6 +49,11 @@ def validate(record: Metadata, marketplace: str) -> Metadata:
             raise ValueError(f"{m.filename}: Adobe CSV titles must not contain commas")
         if m.category != "" and str(m.category) not in {str(n) for n in range(1, 22)}:
             raise ValueError("Adobe category must be blank or an ID from 1 to 21")
+        if m.releases:
+            from .core import safe_filename
+            safe_filename(m.releases)
+            if not m.releases.lower().endswith((".jpg", ".jpeg")):
+                raise ValueError("Adobe release must be an exact uploaded JPEG filename")
     else:
         flag(m.color)
     return m
@@ -75,7 +80,7 @@ def export_csv(records, marketplace: str) -> bytes:
         else:
             row = [m.filename, m.caption, m.country, m.caption, keywords, m.color.lower()]
         # Reject formula-like cells rather than changing asset names or metadata.
-        if any(str(cell).lstrip().startswith(("=", "+", "-", "@")) for cell in row):
+        if any(str(cell).lstrip(" \t\r\n\ufeff").startswith(("=", "+", "-", "@")) for cell in row):
             raise ValueError(f"{m.filename}: spreadsheet formula-like cell; revise metadata")
         writer.writerow(row)
         count += 1

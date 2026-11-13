@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import sys
-from .core import Metadata, process_image
+from .core import Metadata, process_image, unique_json_object
 from .csv_export import export_csv, export_istock_zip, validate
 
 
@@ -60,6 +60,8 @@ def main(argv=None):
         if args.istock_zip and args.marketplace != "istock":
             raise ValueError("--istock-zip requires --marketplace istock")
         root = Path(args.input_dir).resolve(strict=True)
+        if not root.is_dir():
+            raise ValueError("input must be a directory")
         output = Path(args.output).absolute()
         if output.is_symlink() or output.exists():
             raise ValueError("output exists; choose a new path (overwriting is disabled)")
@@ -73,7 +75,7 @@ def main(argv=None):
         backend = None
         if args.metadata_json:
             with open(args.metadata_json, encoding="utf-8-sig") as source:
-                metadata = json.load(source)
+                metadata = json.load(source, object_pairs_hook=unique_json_object)
             if not isinstance(metadata, dict):
                 raise ValueError("metadata JSON must be an object keyed by filename")
         else:

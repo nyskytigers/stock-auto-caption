@@ -60,6 +60,13 @@ class StockImageApp:
             self._draw_footer()
             return # Stop execution if no files
 
+        try:
+            from stock_metadata.uploads import sync_uploads
+            sync_uploads(uploaded_files, st.session_state)
+        except ValueError as error:
+            st.error(str(error))
+            return
+
         if self.models is None:
             try:
                 self.models = ModelLoader()

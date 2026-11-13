@@ -119,6 +119,13 @@ rules. The standalone script takes a JSON list, unlike the CLI's keyed object.
 See [full demo](skills/stock-metadata-assistant/references/demo.md).
 Nothing publishes to Agensi automatically.
 
+The current skill is **v1.0.0-rc.1**, separate from the application's version.
+See [release evidence](docs/release-candidate.md), [listing/FAQ draft](docs/agensi-v1-listing.md)
+and [complete demonstration](docs/demo/walkthrough.md). Builds now include a SHA-256
+manifest alongside the ZIP; fixed timestamps make repeated builds reproducible in
+the same Python/zlib environment. CI uploads the ZIP and manifest as workflow
+artifacts for review, never to Agensi.
+
 ## Privacy and limitations
 
 Local inference runs on the machine hosting Python. First use downloads models
@@ -148,6 +155,11 @@ they do not download models or contact marketplaces. Image tests skip if Pillow
 is absent; UI adapter tests skip if Streamlit/Pillow is absent. CI installs those
 dependencies in separate jobs. See [actual validation results](docs/validation.md),
 [audit and plan](docs/audit-and-plan.md) and [release checklist](docs/release-checklist.md).
+
+The separately invoked `tools/smoke_inference.py --output <new-report.json>` runs
+real cached BLIP/KeyBERT offline. It is excluded from unit tests and ordinary CI.
+Actual outputs and fixture scope live in docs/inference-results.json; a successful
+smoke run does not establish factual accuracy or marketplace acceptance.
 
 ## License
 

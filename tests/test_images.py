@@ -25,6 +25,7 @@ class ImageTests(unittest.TestCase):
             record = process_image(source, Backend(), source.name)
             self.assertEqual(record.filename, source.name)
             self.assertEqual(record.caption, "NYC mug")
+            self.assertEqual(process_image(str(source), Backend()).filename, source.name)
             self.assertEqual(hashlib.sha256(source.read_bytes()).digest(), before)
 
     def test_corrupt_file_does_not_stop_batch(self):

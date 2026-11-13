@@ -4,17 +4,22 @@ from .core import clean_caption, refine_caption
 
 
 class LocalBackend:
-    def __init__(self):
+    def __init__(self, *, blip_path=None, keyword_path=None, local_files_only=False):
         try:
             from transformers import BlipProcessor, BlipForConditionalGeneration
             from keybert import KeyBERT
         except ImportError as error:
             raise RuntimeError('Local AI dependencies missing; install stock-auto-caption[ai]') from error
-        name = "Salesforce/blip-image-captioning-base"
+        name = blip_path or "Salesforce/blip-image-captioning-base"
         # Slow processor avoids implicit torchvision dependency.
-        self.processor = BlipProcessor.from_pretrained(name, use_fast=False)
-        self.model = BlipForConditionalGeneration.from_pretrained(name).eval()
-        self.kw_model = KeyBERT(model="all-MiniLM-L6-v2")
+        self.processor = BlipProcessor.from_pretrained(name, use_fast=False, local_files_only=local_files_only)
+        self.model = BlipForConditionalGeneration.from_pretrained(name, local_files_only=local_files_only).eval()
+        if local_files_only or keyword_path:
+            from sentence_transformers import SentenceTransformer
+            keyword_model = SentenceTransformer(keyword_path or "all-MiniLM-L6-v2", local_files_only=local_files_only)
+        else:
+            keyword_model = "all-MiniLM-L6-v2"
+        self.kw_model = KeyBERT(model=keyword_model)
 
     def generate_caption(self, image):
         import torch

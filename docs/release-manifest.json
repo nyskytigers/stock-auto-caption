@@ -1,0 +1,27 @@
+{
+  "artifact": "stock-metadata-assistant.zip",
+  "sha256": "8307a64d1f9fcb9966ec0928d9a1bff5390ec72cd8e9ded9cf2dd6553a3b4a6b",
+  "size_bytes": 11251,
+  "files": {
+    "SKILL.md": {
+      "size_bytes": 6312,
+      "sha256": "d31ccb76f31d03611877966992339da4d188a77d421982dec9208ff6573dffe1"
+    },
+    "LICENSE": {
+      "size_bytes": 1069,
+      "sha256": "6f8cf139cb7c7c9dbf5d58a442eacffa97c12212bd1b07f5048ff98346c35461"
+    },
+    "scripts/export_csv.py": {
+      "size_bytes": 9533,
+      "sha256": "1914f5f23544b1e698b9b9599d90c13517ad047c7556eb51be32dc9dab08ac63"
+    },
+    "references/platform-rules.md": {
+      "size_bytes": 5460,
+      "sha256": "308a6ef3e9854c93257c6a5a28cef1c59e4f4d77a6dbfb6e31adfc71305dab6e"
+    },
+    "references/demo.md": {
+      "size_bytes": 2439,
+      "sha256": "25a2a86e20611ff0f4ba5d8300b09550135a033d36e68c12c8b2af0c46be5498"
+    }
+  }
+}

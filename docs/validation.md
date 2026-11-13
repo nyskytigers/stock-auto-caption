@@ -1,5 +1,23 @@
 # Actual validation evidence
 
+## v1.0.0-rc.1 follow-up
+
+2026-11-12, Windows Python 3.10.11: **51 tests, 50 passed, 1 skipped** (symlink
+creation privilege). Full output was recorded during the RC run. Existing Pillow/Streamlit environment; pip check
+reported no broken requirements. compileall and git diff --check passed.
+Added isolated adversarial-input checks, literal headers and demo parity,
+upload-cache invalidation, duplicate JSON rejection, generated-script parity,
+reserved names, metadata types, deterministic ZIP and artifact manifest checks.
+
+Real BLIP/KeyBERT offline inference now executed on three synthetic raster
+illustrations: 3/3 completed, hashes unchanged. Actual captions include factual
+errors. This is separate from fake-inference unit tests, not a photo benchmark.
+See inference-results.json and release-candidate.md for exact scope and failures.
+Final commit CI results are recorded in PR #1; the historical results below are
+retained as earlier evidence rather than assertions about this RC commit.
+
+---
+
 Executed 2026-11-12 on Windows, Python 3.10.11.
 
 ## Automated results

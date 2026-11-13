@@ -3,11 +3,23 @@
 from dataclasses import dataclass, field
 import re
 import unicodedata
+from pathlib import Path
+
+
+def unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
 
 
 def clean_caption(value: str) -> str:
     if not isinstance(value, str):
         raise ValueError("caption must be text")
+    if any(unicodedata.category(c) == "Cc" and not c.isspace() for c in value):
+        raise ValueError("metadata text contains a control character")
     # Keep proper names, acronyms and meaningful case; never truncate silently.
     return " ".join(unicodedata.normalize("NFC", value).split())
 
@@ -35,6 +47,11 @@ def safe_filename(value: str) -> str:
         raise ValueError("filename must be a nonempty basename")
     if re.search(r'[\\/:*?"<>|\x00-\x1f\x7f]', value) or value.endswith((" ", ".")):
         raise ValueError(f"unsafe filename: {value!r}; use the exact basename")
+    stem = value.split(".", 1)[0].upper()
+    if stem in {"CON", "PRN", "AUX", "NUL", *(f"COM{i}" for i in range(1, 10)), *(f"LPT{i}" for i in range(1, 10))}:
+        raise ValueError("filename uses a reserved Windows device name")
+    if any(unicodedata.bidirectional(c) in {"RLO", "LRO", "RLE", "LRE", "PDF", "RLI", "LRI", "FSI", "PDI"} for c in value):
+        raise ValueError("filename contains a bidirectional control character")
     return value
 
 
@@ -53,6 +70,13 @@ class Metadata:
     color: str = "yes"
 
     def normalized(self):
+        if not isinstance(self.categories, (list, tuple)) or any(not isinstance(c, str) for c in self.categories):
+            raise ValueError("categories must be a list of category names")
+        if isinstance(self.category, bool) or not isinstance(self.category, (str, int)):
+            raise ValueError("category must be a text or integer category ID")
+        for name in ("releases", "country", "editorial", "mature", "illustration", "color"):
+            if not isinstance(getattr(self, name), str):
+                raise ValueError(f"{name} must be text")
         return Metadata(
             filename=safe_filename(self.filename), caption=clean_caption(self.caption),
             keywords=clean_keywords(self.keywords), categories=list(self.categories),
@@ -62,27 +86,6 @@ class Metadata:
         )
 
 
-def refine_caption(raw_caption, keyword_model):
-    caption = clean_caption(raw_caption)
-    keywords = keyword_model.extract_keywords(
-        caption, keyphrase_ngram_range=(1, 2), stop_words="english", top_n=25)
-    return caption, ", ".join(clean_keywords([term for term, _ in keywords]))
-
-
-def process_image(source, backend, filename=None) -> Metadata:
-    """Decode before inference, close resources, never write to the source."""
-    from PIL import Image, ImageOps
-    name = safe_filename(filename or source.name)
-    with Image.open(source) as opened:
-        image = ImageOps.exif_transpose(opened).convert("RGB")
-        image.load()
-    try:
-        caption = backend.generate_caption(image)
-        caption, keywords = backend.refine_caption_and_keywords(caption, [])
-        return Metadata(name, caption, keywords).normalized()
-    finally:
-        image.close()
-
 """Verified CSV layouts; no pandas or Streamlit dependency.
 
 Rule provenance and verification date: docs/platform-rules.md.
@@ -90,8 +93,6 @@ Validation rejects invalid data instead of changing filenames or truncating fiel
 """
 import csv
 import io
-import zipfile
-
 
 SCHEMAS = {
     "shutterstock": ["Filename", "Description", "Keywords", "Categories", "Illustration", "Mature Content", "Editorial"],
@@ -134,6 +135,10 @@ def validate(record: Metadata, marketplace: str) -> Metadata:
             raise ValueError(f"{m.filename}: Adobe CSV titles must not contain commas")
         if m.category != "" and str(m.category) not in {str(n) for n in range(1, 22)}:
             raise ValueError("Adobe category must be blank or an ID from 1 to 21")
+        if m.releases:
+            safe_filename(m.releases)
+            if not m.releases.lower().endswith((".jpg", ".jpeg")):
+                raise ValueError("Adobe release must be an exact uploaded JPEG filename")
     else:
         flag(m.color)
     return m
@@ -160,7 +165,7 @@ def export_csv(records, marketplace: str) -> bytes:
         else:
             row = [m.filename, m.caption, m.country, m.caption, keywords, m.color.lower()]
         # Reject formula-like cells rather than changing asset names or metadata.
-        if any(str(cell).lstrip().startswith(("=", "+", "-", "@")) for cell in row):
+        if any(str(cell).lstrip(" \t\r\n\ufeff").startswith(("=", "+", "-", "@")) for cell in row):
             raise ValueError(f"{m.filename}: spreadsheet formula-like cell; revise metadata")
         writer.writerow(row)
         count += 1
@@ -170,45 +175,37 @@ def export_csv(records, marketplace: str) -> bytes:
     return result
 
 
-def export_istock_zip(records) -> bytes:
-    records = list(records)
-    export_csv(records, "istock")  # validate duplicates across the whole batch
-    output = io.BytesIO()
-    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
-        for record in records:
-            # Full basename avoids collisions between photo.jpg and photo.png.
-            archive.writestr(record.filename + ".csv", export_csv([record], "istock"))
-    return output.getvalue()
-
 
 def main():
     import argparse
     import json
     from pathlib import Path
     import sys
-    parser = argparse.ArgumentParser(description='Independent stock metadata CSV exporter')
-    parser.add_argument('--input', required=True)
-    parser.add_argument('--marketplace', required=True, choices=list(SCHEMAS))
-    parser.add_argument('--output', required=True)
+    parser = argparse.ArgumentParser(description="Independent stock metadata CSV exporter")
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--marketplace", required=True, choices=list(SCHEMAS))
+    parser.add_argument("--output", required=True)
     args = parser.parse_args()
     try:
         source = Path(args.input).resolve(strict=True)
         target = Path(args.output).absolute()
-        if target.is_symlink() or target.exists() or target.suffix.lower() != '.csv':
-            raise ValueError('output must be a new .csv path; overwriting is disabled')
-        with source.open(encoding='utf-8-sig') as handle:
-            rows = json.load(handle)
+        if target.is_symlink() or target.exists() or target.suffix.lower() != ".csv":
+            raise ValueError("output must be a new .csv path; overwriting is disabled")
+        with source.open(encoding="utf-8-sig") as handle:
+            rows = json.load(handle, object_pairs_hook=unique_json_object)
         if not isinstance(rows, list) or not rows:
-            raise ValueError('input must be a nonempty JSON list of metadata objects')
+            raise ValueError("input must be a nonempty JSON list of metadata objects")
+        if any(not isinstance(row, dict) for row in rows):
+            raise ValueError("each metadata row must be an object")
         payload = export_csv([Metadata(**row) for row in rows], args.marketplace)
-        with target.open('xb') as handle:
+        with target.open("xb") as handle:
             handle.write(payload)
-        print(f'Exported {len(rows)} records to {target}')
+        print(f"Exported {len(rows)} records to {target}")
         return 0
-    except (OSError, ValueError, TypeError, AttributeError) as error:
-        print(f'Error: {error}', file=sys.stderr)
+    except (OSError, ValueError, TypeError) as error:
+        print(f"Error: {error}", file=sys.stderr)
         return 2
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())

@@ -1,5 +1,9 @@
 # Release checklist
 
+RC evidence lives in release-candidate.md. Checked local automation is not a
+substitute for the unchecked live-service gates below. Skill version 1.0.0-rc.1
+does not change the application's independent version number.
+
 - [ ] Rebase/review against latest main; inspect the full diff and licenses.
 - [ ] Run python -m unittest discover -s tests -v on Python 3.10–3.12, Windows/Linux.
 - [ ] Install .[images] and .[ai,ui] in clean environments; run pip check.
